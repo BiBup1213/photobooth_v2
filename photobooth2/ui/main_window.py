@@ -41,8 +41,9 @@ class MainWindow(QMainWindow):
                 background: qlineargradient(
                     x1: 0, y1: 0,
                     x2: 0, y2: 1,
-                    stop: 0 #E2C4A5,
-                    stop: 1 #DEBE9F
+                    stop: 0 #F1E3D2,
+                    stop: 0.5 #EEDBCC,
+                    stop: 1 #E7D0B8
                 );
             }
             """
