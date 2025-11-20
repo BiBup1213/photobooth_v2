@@ -26,7 +26,12 @@ def _build_controller(settings: Settings) -> AppController:
     printer = Printer()
     gallery_feature = GalleryFeature(settings.output_dir)
     single_photo_feature = SinglePhotoFeature(camera)
-    collage_feature = CollageCaptureFeature(camera, settings.output_dir, settings.collage_count)
+    collage_feature = CollageCaptureFeature(
+        camera,
+        settings.output_dir,
+        settings.collage_count,
+        settings.collage_overlay_path,
+    )
     external_display = ExternalDisplay()
     slideshow_feature = SlideshowFeature(gallery_feature, external_display)
 

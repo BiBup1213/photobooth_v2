@@ -1,11 +1,13 @@
 """
-Gallery feature that lists captured assets.
+Gallery feature that lists and loads captured assets.
 """
 from __future__ import annotations
 
 import logging
 from pathlib import Path
 from typing import Iterable, List
+
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -25,3 +27,15 @@ class GalleryFeature:
         candidates: Iterable[Path] = self.output_dir.iterdir()
         images = [path for path in candidates if path.suffix.lower() in {".jpg", ".jpeg", ".png"}]
         return sorted(images, key=lambda p: p.stat().st_mtime, reverse=True)
+
+    def load_image(self, path: Path) -> Image.Image | None:
+        """
+        Load an image via Pillow. Returns None if loading fails.
+        """
+        try:
+            return Image.open(path)
+        except FileNotFoundError:
+            logger.error("Requested image missing: %s", path)
+        except Exception as exc:
+            logger.error("Failed to load image %s: %s", path, exc)
+        return None

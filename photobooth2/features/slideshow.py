@@ -4,6 +4,7 @@ Slideshow feature that would render images on a secondary display.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 from photobooth2.devices.external_display import ExternalDisplay
 from photobooth2.features.gallery import GalleryFeature
@@ -22,3 +23,10 @@ class SlideshowFeature:
             return
         logger.info("Starting slideshow on external display (stub)")
         self.external_display.show_slideshow()
+
+    def get_slideshow_sequence(self, limit: int = 50) -> list[Path]:
+        """
+        Return the newest images for slideshow consumption.
+        """
+        images = self.gallery.list_images()
+        return images[:limit]
