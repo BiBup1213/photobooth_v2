@@ -71,5 +71,13 @@ class AppController:
             logger.exception("Printing failed")
             return False
 
+    def delete_image(self, image: Path) -> bool:
+        try:
+            image.unlink()
+            return True
+        except Exception:
+            logger.exception("Deleting image failed")
+            return False
+
     def start_slideshow(self) -> None:
         self.slideshow.start()

@@ -1,5 +1,5 @@
 """
-Start screen showing the event banner, QR placeholder and primary actions.
+Start screen showing floral header graphic and icon-only action buttons.
 """
 from __future__ import annotations
 
@@ -8,12 +8,11 @@ from pathlib import Path
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
-    QFrame,
-    QHBoxLayout,
     QLabel,
     QPushButton,
     QSizePolicy,
     QVBoxLayout,
+    QHBoxLayout,
     QWidget,
 )
 
@@ -30,62 +29,43 @@ class StartScreen(QWidget):
     def __init__(self, settings: Settings, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.settings = settings
-        self._banner_pixmap: QPixmap | None = self._load_pixmap(ASSETS_DIR / "main_banner_floral.png")
-        self._banner_label: QLabel | None = None
 
-        self._build_ui()
-        self._update_banner_pixmap()
-
-    def _build_ui(self) -> None:
+        # complete window background beige
         self.setStyleSheet("background-color: #f3e7d3;")
 
+        self._floral_pixmap: QPixmap | None = self._load_pixmap(
+            ASSETS_DIR / "main_banner_floral.png"
+        )
+        self._floral_label: QLabel | None = None
+
+        self._build_ui()
+        self._update_floral_pixmap()
+
+    # ------------------------------------------------------------------
+    def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(60, 40, 60, 40)
-        layout.setSpacing(30)
+        layout.setContentsMargins(80, 40, 80, 40)
+        layout.setSpacing(20)
 
-        banner_frame = QFrame()
-        banner_frame.setFrameShape(QFrame.Shape.NoFrame)
-        banner_frame.setStyleSheet(
-            "background-color: #f9f0df; border-radius: 20px; border: 2px solid #d6c2a1;"
+        # -------------------------------------------------
+        # FLORAL HEADER (PNG centered, no frame)
+        # -------------------------------------------------
+        self._floral_label = QLabel()
+        self._floral_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._floral_label.setMinimumHeight(420)
+        self._floral_label.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        banner_layout = QVBoxLayout(banner_frame)
-        banner_layout.setContentsMargins(30, 30, 30, 30)
-        banner_layout.setSpacing(16)
+        self._floral_label.setStyleSheet("background: transparent;")
 
-        self._banner_label = QLabel()
-        self._banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._banner_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self._banner_label.setMinimumHeight(260)
-        self._banner_label.setStyleSheet(
-            "background-color: #fff8ec; border-radius: 18px; border: 1px solid #e0d2b8;"
-        )
+        layout.addWidget(self._floral_label, stretch=3)
 
-        title = QLabel(self.settings.event_name)
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setFont(QFont("Arial", 32, QFont.Weight.Bold))
-        title.setStyleSheet("color: #5a4c3b;")
-
-        subtitle = QLabel(self.settings.event_date)
-        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle.setFont(QFont("Arial", 18))
-        subtitle.setStyleSheet("color: #6d5a44;")
-
-        qr_placeholder = QLabel("QR-Code (Platzhalter)")
-        qr_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        qr_placeholder.setMinimumHeight(120)
-        qr_placeholder.setStyleSheet(
-            "color: #7a6a55; border: 2px dashed #c7b79a; border-radius: 10px; background-color: #fff8ec;"
-        )
-
-        banner_layout.addWidget(self._banner_label)
-        banner_layout.addWidget(title)
-        banner_layout.addWidget(subtitle)
-        banner_layout.addWidget(qr_placeholder)
-
-        buttons_frame = QFrame()
-        buttons_layout = QHBoxLayout(buttons_frame)
-        buttons_layout.setContentsMargins(0, 0, 0, 0)
-        buttons_layout.setSpacing(24)
+        # -------------------------------------------------
+        # BUTTONS (icon-only, centered)
+        # -------------------------------------------------
+        buttons_layout = QHBoxLayout()
+        buttons_layout.setContentsMargins(0, 0, 0, 40)
+        buttons_layout.setSpacing(60)
 
         gallery_btn = self._create_action_button(ASSETS_DIR / "btn_gallery.png", "Galerie")
         photo_btn = self._create_action_button(ASSETS_DIR / "btn_photo.png", "Foto")
@@ -95,74 +75,79 @@ class StartScreen(QWidget):
         photo_btn.clicked.connect(self.photo_requested.emit)
         collage_btn.clicked.connect(self.collage_requested.emit)
 
+        buttons_layout.addStretch(1)
         buttons_layout.addWidget(gallery_btn)
         buttons_layout.addWidget(photo_btn)
         buttons_layout.addWidget(collage_btn)
+        buttons_layout.addStretch(1)
 
-        layout.addWidget(banner_frame, stretch=2)
-        layout.addWidget(buttons_frame, stretch=1)
-        layout.setAlignment(buttons_frame, Qt.AlignmentFlag.AlignBottom)
+        layout.addLayout(buttons_layout, stretch=1)
 
+    # ------------------------------------------------------------------
     def _create_action_button(self, icon_path: Path, fallback_text: str) -> QPushButton:
         btn = QPushButton()
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn.setMinimumHeight(110)
-        btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        btn.setFont(QFont("Arial", 18, QFont.Weight.Bold))
-        btn.setStyleSheet(
-            """
-            QPushButton { background-color: #5a7a6b; color: white; border: none; border-radius: 14px; }
-            QPushButton:hover { background-color: #6c8c7d; }
-            QPushButton:pressed { background-color: #4a6a5b; }
-            """
-        )
+
+        # fixed icon tile size
+        btn.setMinimumSize(160, 160)
+        btn.setMaximumSize(180, 180)
+        btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         icon = self._load_icon(icon_path)
-        if icon is not None:
+        if icon:
             btn.setIcon(icon)
-            btn.setIconSize(QSize(128, 128))
+            btn.setIconSize(QSize(140, 140))
             btn.setText("")
         else:
             btn.setText(fallback_text)
+            btn.setFont(QFont("Arial", 16, QFont.Weight.Bold))
 
-        btn.setToolTip(fallback_text)
+        # pure icon, no background
+        btn.setStyleSheet(
+            """
+            QPushButton {
+                background: transparent;
+                border: none;
+            }
+            """
+        )
+
         return btn
 
+    # ------------------------------------------------------------------
     def _load_pixmap(self, path: Path) -> QPixmap | None:
         if not path.exists():
             return None
-
         pixmap = QPixmap(str(path))
-        if pixmap.isNull():
-            return None
-        return pixmap
+        return pixmap if not pixmap.isNull() else None
 
     def _load_icon(self, path: Path) -> QIcon | None:
-        pixmap = self._load_pixmap(path)
-        if pixmap is None:
+        pix = self._load_pixmap(path)
+        if pix is None:
             return None
-
-        icon = QIcon(pixmap)
+        icon = QIcon(pix)
         return icon if not icon.isNull() else None
 
-    def _update_banner_pixmap(self) -> None:
-        if self._banner_label is None:
+    # ------------------------------------------------------------------
+    def _update_floral_pixmap(self) -> None:
+        if not self._floral_label:
+            return
+        if not self._floral_pixmap:
+            self._floral_label.clear()
             return
 
-        if self._banner_pixmap is None or self._banner_pixmap.isNull():
-            self._banner_label.clear()
+        size = self._floral_label.size()
+        if size.width() <= 0 or size.height() <= 0:
             return
 
-        if self._banner_label.width() <= 0 or self._banner_label.height() <= 0:
-            return
-
-        scaled = self._banner_pixmap.scaled(
-            self._banner_label.size(),
+        scaled = self._floral_pixmap.scaled(
+            size,
             Qt.AspectRatioMode.KeepAspectRatio,
             Qt.TransformationMode.SmoothTransformation,
         )
-        self._banner_label.setPixmap(scaled)
+        self._floral_label.setPixmap(scaled)
 
-    def resizeEvent(self, event) -> None:  # type: ignore[override]
+    # ------------------------------------------------------------------
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
-        self._update_banner_pixmap()
+        self._update_floral_pixmap()
