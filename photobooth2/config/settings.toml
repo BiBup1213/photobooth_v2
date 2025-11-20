@@ -1,0 +1,13 @@
+# Default configuration for Photobooth 2.0. Adjust to match the event.
+
+[event]
+name = "Eure Fotobox"
+date = "2024-12-31"
+qr_url = "https://example.com/gallery"
+
+[paths]
+output_dir = "output"
+
+[collage]
+photo_count = 3
+# overlay = "assets/floral_overlay.png"
