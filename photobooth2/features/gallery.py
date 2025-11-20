@@ -25,7 +25,11 @@ class GalleryFeature:
             return []
 
         candidates: Iterable[Path] = self.output_dir.iterdir()
-        images = [path for path in candidates if path.suffix.lower() in {".jpg", ".jpeg", ".png"}]
+        images = [
+            path
+            for path in candidates
+            if path.suffix.lower() in {".jpg", ".jpeg", ".png"}
+        ]
         return sorted(images, key=lambda p: p.stat().st_mtime, reverse=True)
 
     def load_image(self, path: Path) -> Image.Image | None:

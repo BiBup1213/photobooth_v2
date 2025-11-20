@@ -16,7 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 class CollageCaptureFeature:
-    def __init__(self, camera: DslrCamera, output_dir: Path, collage_count: int, collage_overlay_path: Path | None = None) -> None:
+    def __init__(
+        self,
+        camera: DslrCamera,
+        output_dir: Path,
+        collage_count: int,
+        collage_overlay_path: Path | None = None,
+    ) -> None:
         self.camera = camera
         self.output_dir = output_dir
         self.collage_count = collage_count
@@ -25,11 +31,17 @@ class CollageCaptureFeature:
     def capture_collage(self) -> Path:
         """
         Capture several photos and combine them into a simple collage.
+
+        Returns:
+            Path to the saved collage image.
         """
         logger.info("Starting collage capture (%s photos)", self.collage_count)
+
         photos: List[Path] = []
         for index in range(self.collage_count):
-            logger.info("Capturing collage photo %s/%s", index + 1, self.collage_count)
+            logger.info(
+                "Capturing collage photo %s/%s", index + 1, self.collage_count
+            )
             photos.append(self.camera.capture_photo())
 
         images = self._load_and_normalize(photos)
@@ -56,27 +68,34 @@ class CollageCaptureFeature:
 
     def _compose(self, images: list[Image.Image]) -> Image.Image:
         """
-        Compose images into a 2x2-style collage. With 3 images the last one spans the bottom row.
+        Compose images into a 2x2-style collage.
+        With 3 images the last one spans the bottom row.
+        Only the first 4 images are used.
         """
-        count = len(images)
-        if count == 0:
+        if not images:
             raise ValueError("No images provided for collage")
+
+        # use at most 4 images
+        images = images[:4]
+        count = len(images)
 
         # Base cell size derived from first image to preserve decent quality.
         cell_w, cell_h = images[0].size
         cell_w = max(cell_w, 800)
         cell_h = max(cell_h, 800)
 
-        if count == 3:
-            canvas_w = cell_w * 2
-            canvas_h = cell_h * 2
-        else:
-            canvas_w = cell_w * 2
-            canvas_h = cell_h * 2
+        canvas_w = cell_w * 2
+        canvas_h = cell_h * 2
 
         collage = Image.new("RGB", (canvas_w, canvas_h), color=(245, 245, 245))
 
-        if count == 3:
+        if count == 1:
+            positions = [(0, 0)]
+            sizes = [(canvas_w, canvas_h)]
+        elif count == 2:
+            positions = [(0, 0), (cell_w, 0)]
+            sizes = [(cell_w, canvas_h), (cell_w, canvas_h)]
+        elif count == 3:
             positions = [
                 (0, 0),
                 (cell_w, 0),
@@ -87,7 +106,7 @@ class CollageCaptureFeature:
                 (cell_w, cell_h),
                 (canvas_w, cell_h),
             ]
-        else:
+        else:  # 4 or more -> 2x2 grid
             positions = [
                 (0, 0),
                 (cell_w, 0),

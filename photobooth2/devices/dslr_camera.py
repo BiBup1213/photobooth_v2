@@ -19,7 +19,10 @@ class DslrCamera:
     def capture_photo(self) -> Path:
         """
         Capture a photo using gphoto2 and return the saved file path.
-        Raises an exception if gphoto2 is missing or the command fails.
+
+        Raises:
+            FileNotFoundError: if gphoto2 is not installed or not on PATH.
+            subprocess.CalledProcessError / OSError: wenn der gphoto2-Aufruf scheitert.
         """
         gphoto = shutil.which("gphoto2")
         if not gphoto:
@@ -28,6 +31,7 @@ class DslrCamera:
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         target = self.output_dir / f"photo_{timestamp}.jpg"
+
         command = [
             gphoto,
             "--capture-image-and-download",

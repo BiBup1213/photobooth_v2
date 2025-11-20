@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import logging
 import sys
+
 from PyQt6.QtWidgets import QApplication
 
 from photobooth2.config.loader import Settings, load_settings
@@ -47,7 +48,10 @@ def _build_controller(settings: Settings) -> AppController:
 
 
 def run_app() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
 
     app = QApplication(sys.argv)
     settings = load_settings()

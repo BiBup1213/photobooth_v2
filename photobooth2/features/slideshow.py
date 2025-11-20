@@ -18,6 +18,10 @@ class SlideshowFeature:
         self.external_display = external_display
 
     def start(self) -> None:
+        """
+        Trigger slideshow on external display if available.
+        Currently still a stub for the actual rendering logic.
+        """
         if not self.external_display.is_available():
             logger.info("No external display detected; slideshow disabled")
             return
