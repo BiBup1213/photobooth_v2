@@ -11,10 +11,12 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QStackedWidget,
     QPushButton,
+    QMenu,
 )
 
 from photobooth2.config.loader import Settings
 from photobooth2.controller.app_controller import AppController
+from photobooth2.ui.dialogs.camera_selection_dialog import CameraSelectionDialog
 from photobooth2.ui.screens.capture_screen import CaptureScreen
 from photobooth2.ui.screens.gallery_screen import GalleryScreen
 from photobooth2.ui.screens.result_screen import ResultScreen
@@ -81,6 +83,8 @@ class MainWindow(QMainWindow):
 
         # Permanenter Close-Button oben rechts
         self._create_close_button()
+        # Globaler Hamburger oben links
+        self._create_menu_button()
 
         self.show_start()
 
@@ -88,10 +92,10 @@ class MainWindow(QMainWindow):
 
     def _create_close_button(self) -> None:
         self._close_button = QPushButton("×", self)
-        self._close_button.setFixedSize(40, 40)
+        self._close_button.setFixedSize(56, 56)
 
         font = self._close_button.font()
-        font.setPointSize(18)
+        font.setPointSize(28)
         font.setBold(True)
         self._close_button.setFont(font)
 
@@ -103,21 +107,50 @@ class MainWindow(QMainWindow):
                 border: none;
             }
             QPushButton:hover {
-                background-color: rgba(0, 0, 0, 0.08);
-                border-radius: 20px;
+                background-color: rgba(0, 0, 0, 0.06);
+                border-radius: 28px;
             }
             """
         )
         self._close_button.clicked.connect(self.close)
 
+    def _create_menu_button(self) -> None:
+        self._menu_button = QPushButton("☰", self)
+        self._menu_button.setFixedSize(56, 56)
+
+        font = self._menu_button.font()
+        font.setPointSize(26)
+        font.setBold(True)
+        self._menu_button.setFont(font)
+
+        self._menu_button.setStyleSheet(
+            """
+            QPushButton {
+                background-color: transparent;
+                color: #5a4c3b;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: rgba(0, 0, 0, 0.06);
+                border-radius: 28px;
+            }
+            """
+        )
+        self._menu_button.clicked.connect(self._open_menu)
+
     def resizeEvent(self, event) -> None:  # type: ignore[override]
         super().resizeEvent(event)
         # Close-Button immer oben rechts platzieren
-        margin = 8
+        side_margin = 24
+        top_margin = 16
         if hasattr(self, "_close_button"):
-            x = self.width() - self._close_button.width() - margin
-            y = margin
+            x = self.width() - self._close_button.width() - side_margin
+            y = top_margin
             self._close_button.move(x, y)
+        if hasattr(self, "_menu_button"):
+            x = side_margin
+            y = top_margin
+            self._menu_button.move(x, y)
 
     # --- Screen-Wechsel ---------------------------------------------------
 
@@ -207,3 +240,30 @@ class MainWindow(QMainWindow):
             return
 
         self.gallery_screen.remove_image(image)
+
+    # --- Menü & Kamera-Auswahl -------------------------------------------
+
+    def _open_menu(self) -> None:
+        menu = QMenu(self)
+        settings_action = menu.addAction("Einstellungen")
+        camera_action = menu.addAction("Kamera auswählen")
+        menu.addSeparator()
+        quit_action = menu.addAction("Beenden")
+
+        action = menu.exec(self._menu_button.mapToGlobal(self._menu_button.rect().bottomLeft()))
+        if action == settings_action:
+            QMessageBox.information(self, "Einstellungen", "Einstellungen folgen.")
+        elif action == camera_action:
+            self._open_camera_dialog()
+        elif action == quit_action:
+            self.close()
+
+    def _open_camera_dialog(self) -> None:
+        dialog = CameraSelectionDialog(self.controller, self)
+        dialog.exec()
+
+    def closeEvent(self, event) -> None:  # type: ignore[override]
+        try:
+            self.controller.camera_manager.release()
+        finally:
+            super().closeEvent(event)

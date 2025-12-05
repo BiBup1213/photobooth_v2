@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QPixmap, QFont
+from PyQt6.QtGui import QIcon, QPixmap, QFont
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -22,6 +22,7 @@ from PyQt6.QtWidgets import (
 )
 
 logger = logging.getLogger(__name__)
+ICONS_DIR = Path(__file__).resolve().parent.parent / "assets" / "icons"
 
 
 class GalleryScreen(QWidget):
@@ -51,7 +52,7 @@ class GalleryScreen(QWidget):
         # --- Grid-Ansicht --------------------------------------------------
         grid_page = QWidget()
         grid_layout = QVBoxLayout(grid_page)
-        grid_layout.setContentsMargins(0, 0, 0, 0)
+        grid_layout.setContentsMargins(92, 0, 0, 0)  # left offset to avoid burger
         grid_layout.setSpacing(8)
 
         self._empty_label = QLabel("Noch keine Bilder vorhanden.")
@@ -121,6 +122,7 @@ class GalleryScreen(QWidget):
         self._detail_image.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
+        self._detail_image.setMinimumHeight(520)
         self._detail_image.setStyleSheet(
             "background-color: rgba(255, 255, 255, 0.05); border: none;"
         )
@@ -129,8 +131,8 @@ class GalleryScreen(QWidget):
         bottom_bar = QHBoxLayout()
         bottom_bar.addStretch(1)
 
-        self._print_btn = self._create_green_button("Drucken")
-        self._delete_btn = self._create_green_button("Löschen")
+        self._print_btn = self._create_icon_button(self._load_icon("print.png"))
+        self._delete_btn = self._create_icon_button(self._load_icon("delete.png"))
 
         self._print_btn.clicked.connect(self._emit_print_current)
         self._delete_btn.clicked.connect(self._emit_delete_current)
@@ -141,30 +143,35 @@ class GalleryScreen(QWidget):
         detail_layout.addLayout(top_bar)
         detail_layout.addWidget(self._detail_image, 1)
         detail_layout.addLayout(bottom_bar)
+        detail_layout.setStretch(0, 0)
+        detail_layout.setStretch(1, 1)
+        detail_layout.setStretch(2, 0)
 
         self._stack.addWidget(detail_page)
 
         # --- Back-Button für Grid-Modus -----------------------------------
-        self._back_btn = self._create_green_button("Zurück")
-        self._back_btn.setFixedWidth(96)
+        back_icon = self._load_icon("back.png")
+        self._back_btn = self._create_icon_button(back_icon)
         self._back_btn.clicked.connect(self.back_requested.emit)
         root.addWidget(self._back_btn, 0, Qt.AlignmentFlag.AlignLeft)
 
         self._show_grid()
 
-    def _create_green_button(self, text: str) -> QPushButton:
-        btn = QPushButton(text)
+    def _create_icon_button(self, icon: QIcon | None) -> QPushButton:
+        btn = QPushButton()
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn.setMinimumHeight(32)
+        btn.setFixedSize(64, 64)
+        if icon:
+            btn.setIcon(icon)
+            btn.setIconSize(QSize(32, 32))
         btn.setStyleSheet(
             """
             QPushButton {
                 background-color: #5a7a6b;
                 color: white;
                 border: none;
-                border-radius: 8px;
-                padding: 6px 16px;
-                font-weight: 600;
+                border-radius: 12px;
+                padding: 10px;
             }
             QPushButton:hover {
                 background-color: #6c8c7d;
@@ -175,6 +182,10 @@ class GalleryScreen(QWidget):
             """
         )
         return btn
+
+    def _load_icon(self, filename: str) -> QIcon | None:
+        path = ICONS_DIR / filename
+        return QIcon(str(path)) if path.exists() else None
 
     # ------------------------------------------------------------------ API
 
@@ -197,7 +208,7 @@ class GalleryScreen(QWidget):
                     Qt.TransformationMode.SmoothTransformation,
                 )
                 item = QListWidgetItem()
-                item.setIcon(icon_pixmap)
+                item.setIcon(QIcon(icon_pixmap))
                 item.setData(Qt.ItemDataRole.UserRole, str(path))
                 item.setToolTip(path.name)
                 self._list.addItem(item)

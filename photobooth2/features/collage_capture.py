@@ -10,7 +10,7 @@ from typing import Iterable, List
 
 from PIL import Image, ImageOps
 
-from photobooth2.devices.dslr_camera import DslrCamera
+from photobooth2.devices.camera_manager import CameraManager
 
 logger = logging.getLogger(__name__)
 
@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 class CollageCaptureFeature:
     def __init__(
         self,
-        camera: DslrCamera,
+        camera_manager: CameraManager,
         output_dir: Path,
         collage_count: int,
         collage_overlay_path: Path | None = None,
     ) -> None:
-        self.camera = camera
+        self.camera_manager = camera_manager
         self.output_dir = output_dir
         self.collage_count = collage_count
         self.collage_overlay_path = collage_overlay_path
@@ -42,7 +42,7 @@ class CollageCaptureFeature:
             logger.info(
                 "Capturing collage photo %s/%s", index + 1, self.collage_count
             )
-            photos.append(self.camera.capture_photo())
+            photos.append(self.camera_manager.capture_photo(self.output_dir))
 
         images = self._load_and_normalize(photos)
         collage = self._compose(images)

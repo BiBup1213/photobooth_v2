@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import QApplication
 
 from photobooth2.config.loader import Settings, load_settings
 from photobooth2.controller.app_controller import AppController
+from photobooth2.devices.camera_manager import CameraManager
 from photobooth2.devices.dslr_camera import DslrCamera
 from photobooth2.devices.external_display import ExternalDisplay
 from photobooth2.devices.printer import Printer
@@ -24,12 +25,13 @@ logger = logging.getLogger(__name__)
 
 
 def _build_controller(settings: Settings) -> AppController:
-    camera = DslrCamera(settings.output_dir)
+    camera_manager = CameraManager()
+    dslr_camera = DslrCamera(settings.output_dir)
     printer = Printer()
     gallery_feature = GalleryFeature(settings.output_dir)
-    single_photo_feature = SinglePhotoFeature(camera)
+    single_photo_feature = SinglePhotoFeature(camera_manager, settings.output_dir)
     collage_feature = CollageCaptureFeature(
-        camera,
+        camera_manager,
         settings.output_dir,
         settings.collage_count,
         settings.collage_overlay_path,
@@ -39,7 +41,8 @@ def _build_controller(settings: Settings) -> AppController:
 
     return AppController(
         settings=settings,
-        camera=camera,
+        camera_manager=camera_manager,
+        dslr_camera=dslr_camera,
         printer=printer,
         gallery_feature=gallery_feature,
         single_photo_feature=single_photo_feature,

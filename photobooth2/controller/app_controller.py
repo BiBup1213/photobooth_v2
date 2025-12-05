@@ -4,9 +4,11 @@ Central controller that wires UI events to domain features and devices.
 from __future__ import annotations
 
 import logging
+from typing import Callable
 from pathlib import Path
 
 from photobooth2.config.loader import Settings
+from photobooth2.devices.camera_manager import CameraManager
 from photobooth2.devices.dslr_camera import DslrCamera
 from photobooth2.devices.printer import Printer
 from photobooth2.features.collage_capture import CollageCaptureFeature
@@ -21,7 +23,8 @@ class AppController:
     def __init__(
         self,
         settings: Settings,
-        camera: DslrCamera,
+        camera_manager: CameraManager,
+        dslr_camera: DslrCamera,
         printer: Printer,
         gallery_feature: GalleryFeature,
         single_photo_feature: SinglePhotoFeature,
@@ -29,7 +32,8 @@ class AppController:
         slideshow_feature: SlideshowFeature,
     ) -> None:
         self.settings = settings
-        self.camera = camera
+        self.camera_manager = camera_manager
+        self.dslr = dslr_camera
         self.printer = printer
         self.gallery = gallery_feature
         self.single_photo = single_photo_feature
@@ -37,6 +41,9 @@ class AppController:
         self.slideshow = slideshow_feature
 
         self.last_captured: Path | None = None
+        self._camera_change_callbacks: list[Callable[[str | None], None]] = []
+
+        self._initialize_camera()
 
     def capture_single_photo(self) -> Path | None:
         try:
@@ -81,3 +88,39 @@ class AppController:
 
     def start_slideshow(self) -> None:
         self.slideshow.start()
+
+    # --- Camera handling -------------------------------------------------
+    def _initialize_camera(self) -> None:
+        self.camera_manager.auto_select(self.dslr)
+
+    def refresh_camera_list(self) -> None:
+        self.camera_manager.refresh_devices()
+
+    def select_dslr(self) -> bool:
+        try:
+            self.camera_manager.use_dslr(self.dslr)
+            self._emit_camera_changed()
+            return True
+        except Exception:
+            logger.exception("Switching to DSLR failed")
+            return False
+
+    def select_webcam(self, index: int) -> bool:
+        try:
+            self.camera_manager.use_webcam(index)
+            self._emit_camera_changed()
+            return True
+        except Exception:
+            logger.exception("Switching to webcam %s failed", index)
+            return False
+
+    def on_camera_changed(self, callback: Callable[[str | None], None]) -> None:
+        self._camera_change_callbacks.append(callback)
+
+    def _emit_camera_changed(self) -> None:
+        active = self.camera_manager.get_active_type()
+        for callback in self._camera_change_callbacks:
+            try:
+                callback(active)
+            except Exception as exc:
+                logger.warning("Camera change callback failed: %s", exc)
