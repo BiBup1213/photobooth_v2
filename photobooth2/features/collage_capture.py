@@ -25,7 +25,7 @@ class CollageCaptureFeature:
     ) -> None:
         self.camera_manager = camera_manager
         self.output_dir = output_dir
-        self.collage_count = collage_count
+        self.collage_count = max(1, collage_count)
         self.collage_overlay_path = collage_overlay_path
 
     def capture_collage(self) -> Path:
@@ -45,6 +45,21 @@ class CollageCaptureFeature:
             photos.append(self.camera_manager.capture_photo(self.output_dir))
 
         images = self._load_and_normalize(photos)
+        collage = self._compose(images)
+
+        if self.collage_overlay_path and self.collage_overlay_path.exists():
+            collage = self._apply_overlay(collage, self.collage_overlay_path)
+
+        collage_path = self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        collage.save(collage_path, format="JPEG", quality=90)
+        logger.info("Collage saved to %s", collage_path)
+        return collage_path
+
+    def compose_from_photos(self, photos: Iterable[Path]) -> Path:
+        """
+        Build a collage from already captured photos.
+        """
+        images = self._load_and_normalize(list(photos))
         collage = self._compose(images)
 
         if self.collage_overlay_path and self.collage_overlay_path.exists():
@@ -79,13 +94,26 @@ class CollageCaptureFeature:
         images = images[:4]
         count = len(images)
 
-        # Base cell size derived from first image to preserve decent quality.
-        cell_w, cell_h = images[0].size
-        cell_w = max(cell_w, 800)
-        cell_h = max(cell_h, 800)
+        base_w, base_h = images[0].size
+        if base_w == 0 or base_h == 0:
+            base_w, base_h = 3, 2  # fallback to 3:2 ratio
 
-        canvas_w = cell_w * 2
-        canvas_h = cell_h * 2
+        # Preserve the original aspect ratio of a single photo
+        target_long_edge = 2000
+        if base_w >= base_h:
+            scale = target_long_edge / base_w
+        else:
+            scale = target_long_edge / base_h
+
+        canvas_w = int(base_w * scale)
+        canvas_h = int(base_h * scale)
+
+        # Ensure even dimensions for clean cell splits
+        canvas_w += canvas_w % 2
+        canvas_h += canvas_h % 2
+
+        cell_w = canvas_w // 2
+        cell_h = canvas_h // 2
 
         collage = Image.new("RGB", (canvas_w, canvas_h), color=(245, 245, 245))
 

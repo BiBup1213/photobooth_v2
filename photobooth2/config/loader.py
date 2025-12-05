@@ -17,7 +17,7 @@ class Settings:
     event_date: str = ""
     qr_url: str = "https://example.com"
     output_dir: Path = Path("output")
-    collage_count: int = 3
+    collage_count: int = 4
     collage_overlay_path: Path | None = None
 
 

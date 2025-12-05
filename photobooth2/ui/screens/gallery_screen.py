@@ -22,13 +22,14 @@ from PyQt6.QtWidgets import (
 )
 
 logger = logging.getLogger(__name__)
-ICONS_DIR = Path(__file__).resolve().parent.parent / "assets" / "icons"
+ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
 
 class GalleryScreen(QWidget):
     back_requested = pyqtSignal()
     print_requested = pyqtSignal(Path)
     delete_requested = pyqtSignal(Path)
+    image_selected = pyqtSignal(Path)
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -43,8 +44,8 @@ class GalleryScreen(QWidget):
 
     def _build_ui(self) -> None:
         root = QVBoxLayout(self)
-        root.setContentsMargins(32, 24, 32, 24)
-        root.setSpacing(12)
+        root.setContentsMargins(24, 80, 24, 16)
+        root.setSpacing(8)
 
         self._stack = QStackedWidget(self)
         root.addWidget(self._stack, 1)
@@ -52,7 +53,7 @@ class GalleryScreen(QWidget):
         # --- Grid-Ansicht --------------------------------------------------
         grid_page = QWidget()
         grid_layout = QVBoxLayout(grid_page)
-        grid_layout.setContentsMargins(92, 0, 0, 0)  # left offset to avoid burger
+        grid_layout.setContentsMargins(8, 0, 8, 0)
         grid_layout.setSpacing(8)
 
         self._empty_label = QLabel("Noch keine Bilder vorhanden.")
@@ -83,53 +84,40 @@ class GalleryScreen(QWidget):
         grid_layout.addWidget(self._empty_label)
         grid_layout.addWidget(self._list, 1)
 
+        # Bottom bar for gallery back button with padding
+        grid_buttons = QHBoxLayout()
+        grid_buttons.setContentsMargins(12, 8, 12, 12)
+        back_icon = self._load_icon("back.png")
+        self._grid_back_btn = self._create_icon_button(back_icon)
+        self._grid_back_btn.clicked.connect(self.back_requested.emit)
+        grid_buttons.addWidget(self._grid_back_btn, 0, Qt.AlignmentFlag.AlignLeft)
+        grid_buttons.addStretch(1)
+
+        grid_layout.addLayout(grid_buttons)
+
         self._stack.addWidget(grid_page)
 
         # --- Detail-Ansicht -----------------------------------------------
         detail_page = QWidget()
         detail_layout = QVBoxLayout(detail_page)
-        detail_layout.setContentsMargins(0, 0, 0, 0)
-        detail_layout.setSpacing(8)
-
-        # Top-Leiste mit Pfeil
-        top_bar = QHBoxLayout()
-        top_bar.setContentsMargins(0, 0, 0, 0)
-        top_bar.setSpacing(0)
-
-        self._detail_back_btn = QPushButton("←")
-        self._detail_back_btn.setFixedSize(56, 40)
-        self._detail_back_btn.setStyleSheet(
-            """
-            QPushButton {
-                background-color: transparent;
-                color: #5a4c3b;
-                border: none;
-                font-size: 22px;
-            }
-            QPushButton:hover {
-                background-color: rgba(0, 0, 0, 0.06);
-                border-radius: 20px;
-            }
-            """
-        )
-        self._detail_back_btn.clicked.connect(self._show_grid)
-
-        top_bar.addWidget(self._detail_back_btn, 0, Qt.AlignmentFlag.AlignLeft)
-        top_bar.addStretch(1)
+        detail_layout.setContentsMargins(16, 72, 16, 16)
+        detail_layout.setSpacing(12)
 
         self._detail_image = QLabel()
         self._detail_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._detail_image.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        self._detail_image.setMinimumHeight(520)
+        self._detail_image.setMinimumHeight(0)
         self._detail_image.setStyleSheet(
-            "background-color: rgba(255, 255, 255, 0.05); border: none;"
+            "background-color: #000; border: none;"
         )
 
-        # Bottom-Bar mit Drucken/Löschen
+        # Bottom-Bar mit Zurück/Drucken/Löschen
         bottom_bar = QHBoxLayout()
-        bottom_bar.addStretch(1)
+        bottom_bar.setContentsMargins(12, 8, 12, 12)
+        self._detail_back_btn = self._create_icon_button(self._load_icon("back.png"))
+        self._detail_back_btn.clicked.connect(self._show_grid)
 
         self._print_btn = self._create_icon_button(self._load_icon("print.png"))
         self._delete_btn = self._create_icon_button(self._load_icon("delete.png"))
@@ -137,23 +125,15 @@ class GalleryScreen(QWidget):
         self._print_btn.clicked.connect(self._emit_print_current)
         self._delete_btn.clicked.connect(self._emit_delete_current)
 
-        bottom_bar.addWidget(self._print_btn)
-        bottom_bar.addWidget(self._delete_btn)
+        bottom_bar.addWidget(self._detail_back_btn, 0, Qt.AlignmentFlag.AlignLeft)
+        bottom_bar.addStretch(1)
+        bottom_bar.addWidget(self._print_btn, 0, Qt.AlignmentFlag.AlignRight)
+        bottom_bar.addWidget(self._delete_btn, 0, Qt.AlignmentFlag.AlignRight)
 
-        detail_layout.addLayout(top_bar)
         detail_layout.addWidget(self._detail_image, 1)
         detail_layout.addLayout(bottom_bar)
-        detail_layout.setStretch(0, 0)
-        detail_layout.setStretch(1, 1)
-        detail_layout.setStretch(2, 0)
 
         self._stack.addWidget(detail_page)
-
-        # --- Back-Button für Grid-Modus -----------------------------------
-        back_icon = self._load_icon("back.png")
-        self._back_btn = self._create_icon_button(back_icon)
-        self._back_btn.clicked.connect(self.back_requested.emit)
-        root.addWidget(self._back_btn, 0, Qt.AlignmentFlag.AlignLeft)
 
         self._show_grid()
 
@@ -184,7 +164,7 @@ class GalleryScreen(QWidget):
         return btn
 
     def _load_icon(self, filename: str) -> QIcon | None:
-        path = ICONS_DIR / filename
+        path = ASSETS_DIR / filename
         return QIcon(str(path)) if path.exists() else None
 
     # ------------------------------------------------------------------ API
@@ -237,16 +217,16 @@ class GalleryScreen(QWidget):
         if not data:
             return
         path = Path(data)
-        self._show_detail(path)
+        self.image_selected.emit(path)
 
     def _show_grid(self) -> None:
         self._stack.setCurrentIndex(0)
-        self._back_btn.show()
+        # Grid back button stays visible
         self._current = None
         self._current_pixmap = None
         self._detail_image.clear()
 
-    def _show_detail(self, path: Path) -> None:
+    def show_detail(self, path: Path) -> None:
         if not path.exists():
             logger.warning("Detail image missing: %s", path)
             return
@@ -261,7 +241,6 @@ class GalleryScreen(QWidget):
         self._update_detail_pixmap()
 
         self._stack.setCurrentIndex(1)
-        self._back_btn.hide()
 
     def resizeEvent(self, event) -> None:  # type: ignore[override]
         super().resizeEvent(event)
@@ -272,7 +251,9 @@ class GalleryScreen(QWidget):
             return
         label_size = self._detail_image.size()
         if label_size.isEmpty():
-            return
+            label_size = self._stack.size()
+            if label_size.isEmpty():
+                return
         scaled = self._current_pixmap.scaled(
             label_size,
             Qt.AspectRatioMode.KeepAspectRatio,

@@ -9,5 +9,5 @@ qr_url = "https://example.com/gallery"
 output_dir = "output"
 
 [collage]
-photo_count = 3
+photo_count = 4
 # overlay = "assets/floral_overlay.png"

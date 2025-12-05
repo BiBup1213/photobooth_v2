@@ -42,10 +42,14 @@ class AppController:
 
         self.last_captured: Path | None = None
         self._camera_change_callbacks: list[Callable[[str | None], None]] = []
+        self.camera_available = False
 
         self._initialize_camera()
 
     def capture_single_photo(self) -> Path | None:
+        if not self.has_active_camera():
+            logger.warning("Capture requested but no active camera available")
+            return None
         try:
             self.last_captured = self.single_photo.capture()
             return self.last_captured
@@ -54,11 +58,22 @@ class AppController:
             return None
 
     def capture_collage(self) -> Path | None:
+        if not self.has_active_camera():
+            logger.warning("Collage capture requested but no active camera available")
+            return None
         try:
             self.last_captured = self.collage.capture_collage()
             return self.last_captured
         except Exception:
             logger.exception("Collage capture failed")
+            return None
+
+    def compose_collage_from_photos(self, photos: list[Path]) -> Path | None:
+        try:
+            self.last_captured = self.collage.compose_from_photos(photos)
+            return self.last_captured
+        except Exception:
+            logger.exception("Collage composition failed")
             return None
 
     def list_gallery(self) -> list[Path]:
@@ -91,7 +106,12 @@ class AppController:
 
     # --- Camera handling -------------------------------------------------
     def _initialize_camera(self) -> None:
-        self.camera_manager.auto_select(self.dslr)
+        try:
+            self.camera_manager.auto_select(self.dslr)
+            self.camera_available = True
+        except RuntimeError as exc:
+            self.camera_available = False
+            logger.warning("No camera detected at startup: %s", exc)
 
     def refresh_camera_list(self) -> None:
         self.camera_manager.refresh_devices()
@@ -99,6 +119,7 @@ class AppController:
     def select_dslr(self) -> bool:
         try:
             self.camera_manager.use_dslr(self.dslr)
+            self.camera_available = True
             self._emit_camera_changed()
             return True
         except Exception:
@@ -108,11 +129,15 @@ class AppController:
     def select_webcam(self, index: int) -> bool:
         try:
             self.camera_manager.use_webcam(index)
+            self.camera_available = True
             self._emit_camera_changed()
             return True
         except Exception:
             logger.exception("Switching to webcam %s failed", index)
             return False
+
+    def has_active_camera(self) -> bool:
+        return self.camera_manager.get_active_type() is not None
 
     def on_camera_changed(self, callback: Callable[[str | None], None]) -> None:
         self._camera_change_callbacks.append(callback)

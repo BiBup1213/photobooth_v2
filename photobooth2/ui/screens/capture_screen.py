@@ -65,39 +65,6 @@ class CaptureScreen(QWidget):
         root.setContentsMargins(40, 30, 40, 40)
         root.setSpacing(10)
 
-        # Top-Bar mit Close-Button
-        top_bar = QHBoxLayout()
-        top_bar.setContentsMargins(0, 0, 0, 0)
-
-        top_bar.addStretch(1)
-
-        self._close_button = QPushButton("✕")
-        self._close_button.setFixedSize(40, 40)
-        close_font = QFont()
-        close_font.setPointSize(18)
-        close_font.setBold(True)
-        self._close_button.setFont(close_font)
-        self._close_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._close_button.setStyleSheet(
-            """
-            QPushButton {
-                background-color: transparent;
-                border: none;
-                color: #5a4c3b;
-            }
-            QPushButton:hover {
-                background-color: rgba(0,0,0,20);
-                border-radius: 20px;
-            }
-            QPushButton:pressed {
-                background-color: rgba(0,0,0,35);
-            }
-            """
-        )
-        self._close_button.clicked.connect(self._on_close_clicked)
-
-        top_bar.addWidget(self._close_button, alignment=Qt.AlignmentFlag.AlignRight)
-
         # Mittelbereich: "Bitte lächeln" + große Zahl
         self._message_label = QLabel("Bitte lächeln")
         self._message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -115,12 +82,38 @@ class CaptureScreen(QWidget):
         count_font.setBold(True)
         self._count_label.setFont(count_font)
         self._count_label.setStyleSheet("color: #5a4c3b; background: transparent;")
-
-        root.addLayout(top_bar)
         root.addStretch(1)
         root.addWidget(self._message_label, alignment=Qt.AlignmentFlag.AlignCenter)
         root.addWidget(self._count_label, alignment=Qt.AlignmentFlag.AlignCenter)
-        root.addStretch(2)
+
+        self._cancel_button = QPushButton("Cancel")
+        self._cancel_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._cancel_button.setMinimumHeight(64)
+        self._cancel_button.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #5a7a6b;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 16px 28px;
+                font-size: 28px;
+                font-weight: 600;
+            }
+            QPushButton:hover { background-color: #6c8c7d; }
+            QPushButton:pressed { background-color: #4a6a5b; }
+            """
+        )
+        self._cancel_button.clicked.connect(self._on_cancel_clicked)
+
+        button_row = QHBoxLayout()
+        button_row.addStretch(1)
+        button_row.addWidget(self._cancel_button)
+        button_row.addStretch(1)
+
+        root.addSpacing(10)
+        root.addLayout(button_row)
+        root.addStretch(1)
 
     def _setup_fade_animation(self) -> None:
         # Opacity-Effekt + Animation für "Bitte lächeln"
@@ -193,12 +186,9 @@ class CaptureScreen(QWidget):
         # Weiter Countdown anzeigen
         self._count_label.setText(str(self._remaining))
 
-    # ------------------------------------------------------------------ Close-Button
+    # ------------------------------------------------------------------ Cancel
 
-    def _on_close_clicked(self) -> None:
-        """
-        Signal nach außen geben – MainWindow entscheidet, was zu tun ist.
-        """
+    def _on_cancel_clicked(self) -> None:
         self._intro_hold_timer.stop()
         self._countdown_timer.stop()
         self._fade_anim.stop()
