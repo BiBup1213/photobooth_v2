@@ -109,9 +109,7 @@ class GalleryScreen(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         self._detail_image.setMinimumHeight(0)
-        self._detail_image.setStyleSheet(
-            "background-color: #000; border: none;"
-        )
+
 
         # Bottom-Bar mit Zurück/Drucken/Löschen
         bottom_bar = QHBoxLayout()
