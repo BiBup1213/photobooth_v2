@@ -13,7 +13,10 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
-from photobooth2.ui.overlay_text_store import load_overlay_text, save_overlay_text
+from photobooth2.ui.overlay_text_store import (
+    load_overlay_text,
+    save_overlay_text,
+)
 
 
 class OverlayTextSettingsDialog(QDialog):
