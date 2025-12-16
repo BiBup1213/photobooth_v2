@@ -32,11 +32,15 @@ class ResultScreen(QWidget):
         self._image_label.setMinimumSize(400, 300)
 
         # --- icon-only buttons (transparent, no fill/frame) ---------------
+        self._back_button = self._create_icon_only_button("back.png")
         self._home_button = self._create_icon_only_button("home.png")
         self._print_button = self._create_icon_only_button("print.png")
 
         button_bar = QHBoxLayout()
         button_bar.setContentsMargins(24, 12, 24, 24)
+        button_bar.setSpacing(12)
+
+        button_bar.addWidget(self._back_button, 0, Qt.AlignmentFlag.AlignLeft)
         button_bar.addWidget(self._home_button, 0, Qt.AlignmentFlag.AlignLeft)
         button_bar.addStretch(1)
         button_bar.addWidget(self._print_button, 0, Qt.AlignmentFlag.AlignRight)
@@ -53,6 +57,7 @@ class ResultScreen(QWidget):
 
         self._print_button.clicked.connect(self._handle_print)
         self._home_button.clicked.connect(self._handle_cancel)
+        self._back_button.clicked.connect(self._handle_cancel)
 
     # ---------------------------------------------------------------- Buttons
 
@@ -98,15 +103,14 @@ class ResultScreen(QWidget):
             icon = QIcon(str(path))
             button.setIcon(icon)
 
-            # If your PNGs are "designed buttons", go 64x64.
-            # If they are simple glyph icons, keep 36x36.
-            button.setIconSize(QtCore.QSize(64, 64))
+            # For designed PNG buttons, set to match the button size.
+            button.setIconSize(QtCore.QSize(96, 96))
 
     # ---------------------------------------------------------------- API
 
     def set_actions_visible(self, visible: bool) -> None:
         self._actions_visible = visible
-        for btn in (self._print_button, self._home_button):
+        for btn in (self._print_button, self._home_button, self._back_button):
             btn.setVisible(visible)
             btn.setEnabled(visible)
 
