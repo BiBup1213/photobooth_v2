@@ -3,6 +3,7 @@ Start screen showing floral header graphic and icon-only action buttons.
 """
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
@@ -18,8 +19,14 @@ from PyQt6.QtWidgets import (
 )
 
 from photobooth2.config.loader import Settings
+from photobooth2.ui.overlay_text_store import (
+    load_andrea_bellarosa_font,
+    load_overlay_text,
+)
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
+
+logger = logging.getLogger(__name__)
 
 
 class StartScreen(QWidget):
@@ -42,10 +49,14 @@ class StartScreen(QWidget):
         self._floral_label: QLabel | None = None
         self._qr_label: QLabel | None = None
         self._banner_container: QWidget | None = None
+        self._title_label: QLabel | None = None
+        self._subtitle_label: QLabel | None = None
+        self._overlay_font_family: str | None = self._load_overlay_font()
 
         self._build_ui()
         self._update_floral_pixmap()
         self._position_qr()
+        self.reload_overlay_text()
 
     # ------------------------------------------------------------------
     def _build_ui(self) -> None:
@@ -81,6 +92,22 @@ class StartScreen(QWidget):
         self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self._qr_label.setStyleSheet("background: transparent; border: none;")
         self._qr_label.raise_()
+
+        self._title_label = QLabel(self._banner_container)
+        self._title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._title_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._title_label.setStyleSheet(
+            "background: transparent; color: #c84b4b; border: none;"
+        )
+        self._title_label.setFixedHeight(34)
+
+        self._subtitle_label = QLabel(self._banner_container)
+        self._subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._subtitle_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._subtitle_label.setStyleSheet(
+            "background: transparent; color: #c84b4b; border: none;"
+        )
+        self._subtitle_label.setFixedHeight(30)
 
         layout.addWidget(self._banner_container, stretch=3)
 
@@ -217,6 +244,40 @@ class StartScreen(QWidget):
 
         self._qr_label.move(top_left_x, top_left_y)
         self._qr_label.raise_()
+
+        text_width = max(qr_size, int(pm_w * 0.99))
+        text_spacing = 20
+        text_top = top_left_y + scaled_qr.height() + 20
+
+        if self._title_label:
+            self._title_label.resize(text_width, self._title_label.height())
+            self._title_label.move(slot_center_x - text_width // 2, text_top)
+            self._title_label.raise_()
+        if self._subtitle_label:
+            sub_y = text_top
+            if self._title_label:
+                sub_y += self._title_label.height() + text_spacing
+            self._subtitle_label.resize(text_width, self._subtitle_label.height())
+            self._subtitle_label.move(slot_center_x - text_width // 2, sub_y)
+            self._subtitle_label.raise_()
+
+    def reload_overlay_text(self) -> None:
+        line1, line2 = load_overlay_text()
+        if self._title_label:
+            self._title_label.setText(line1)
+            if self._overlay_font_family:
+                self._title_label.setFont(QFont(self._overlay_font_family, 26))
+        if self._subtitle_label:
+            self._subtitle_label.setText(line2)
+            if self._overlay_font_family:
+                self._subtitle_label.setFont(QFont(self._overlay_font_family, 16))
+
+    def _load_overlay_font(self) -> str | None:
+        try:
+            return load_andrea_bellarosa_font()
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.warning("Could not load overlay font: %s", exc)
+            return None
 
     # ------------------------------------------------------------------
     def resizeEvent(self, event) -> None:

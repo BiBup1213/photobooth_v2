@@ -17,11 +17,14 @@ from PyQt6.QtWidgets import (
 
 from photobooth2.config.loader import Settings
 from photobooth2.controller.app_controller import AppController
-from photobooth2.ui.dialogs.camera_selection_dialog import CameraSelectionDialog
+from photobooth2.ui.dialogs.camera_selection_dialog import (
+    CameraSelectionDialog,
+)
 from photobooth2.ui.screens.capture_screen import CaptureScreen
 from photobooth2.ui.screens.gallery_screen import GalleryScreen
 from photobooth2.ui.screens.result_screen import ResultScreen
 from photobooth2.ui.screens.start_screen import StartScreen
+from photobooth2.ui.overlay_text_settings import OverlayTextSettingsDialog
 
 logger = logging.getLogger(__name__)
 
@@ -301,13 +304,16 @@ class MainWindow(QMainWindow):
 
     def _open_menu(self) -> None:
         menu = QMenu(self)
+        overlay_action = menu.addAction("Overlay Text")
         settings_action = menu.addAction("Einstellungen")
         camera_action = menu.addAction("Kamera auswählen")
         menu.addSeparator()
         quit_action = menu.addAction("Beenden")
 
         action = menu.exec(self._menu_button.mapToGlobal(self._menu_button.rect().bottomLeft()))
-        if action == settings_action:
+        if action == overlay_action:
+            self._open_overlay_text_dialog()
+        elif action == settings_action:
             QMessageBox.information(self, "Einstellungen", "Einstellungen folgen.")
         elif action == camera_action:
             self._open_camera_dialog()
@@ -368,3 +374,14 @@ class MainWindow(QMainWindow):
         self.result_screen.set_image(str(collage_path))
         self.result_screen.start_auto_return(10_000)
         self.stacked.setCurrentWidget(self.result_screen)
+
+    # --- Overlay Text -----------------------------------------------------
+
+    def _open_overlay_text_dialog(self) -> None:
+        dialog = OverlayTextSettingsDialog(self)
+        dialog.overlay_text_saved.connect(self._on_overlay_text_saved)
+        dialog.exec()
+
+    def _on_overlay_text_saved(self, line1: str, line2: str) -> None:
+        # Update start screen immediately
+        self.start_screen.reload_overlay_text()
