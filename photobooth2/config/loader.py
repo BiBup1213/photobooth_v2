@@ -24,8 +24,8 @@ class Settings:
 
 def load_settings(settings_path: str | Path | None = None) -> Settings:
     """
-    Load settings from a TOML file. Falls back to defaults when the file is missing
-    or invalid so the app can still start in a safe state.
+    Load settings from a TOML file. Falls back to defaults when the file is 
+    missing or invalid so the app can still start in a safe state.
     """
 
     path = Path(settings_path) if settings_path else Path(__file__).with_name("settings.toml")
