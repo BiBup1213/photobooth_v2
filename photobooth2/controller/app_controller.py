@@ -1,6 +1,7 @@
 """
 Central controller that wires UI events to domain features and devices.
 """
+
 from __future__ import annotations
 
 import logging

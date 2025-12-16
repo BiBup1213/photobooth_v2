@@ -1,6 +1,7 @@
 """
 Collage capture workflow using Pillow to compose multiple photographs.
 """
+
 from __future__ import annotations
 
 import logging
@@ -39,9 +40,7 @@ class CollageCaptureFeature:
 
         photos: List[Path] = []
         for index in range(self.collage_count):
-            logger.info(
-                "Capturing collage photo %s/%s", index + 1, self.collage_count
-            )
+            logger.info("Capturing collage photo %s/%s", index + 1, self.collage_count)
             photos.append(self.camera_manager.capture_photo(self.output_dir))
 
         images = self._load_and_normalize(photos)
@@ -50,7 +49,9 @@ class CollageCaptureFeature:
         if self.collage_overlay_path and self.collage_overlay_path.exists():
             collage = self._apply_overlay(collage, self.collage_overlay_path)
 
-        collage_path = self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        collage_path = (
+            self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        )
         collage.save(collage_path, format="JPEG", quality=90)
         logger.info("Collage saved to %s", collage_path)
         return collage_path
@@ -65,7 +66,9 @@ class CollageCaptureFeature:
         if self.collage_overlay_path and self.collage_overlay_path.exists():
             collage = self._apply_overlay(collage, self.collage_overlay_path)
 
-        collage_path = self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        collage_path = (
+            self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        )
         collage.save(collage_path, format="JPEG", quality=90)
         logger.info("Collage saved to %s", collage_path)
         return collage_path

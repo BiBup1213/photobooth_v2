@@ -1,6 +1,7 @@
 """
 Simple printer abstraction using the system spooler (e.g. CUPS / lp).
 """
+
 from __future__ import annotations
 
 import logging

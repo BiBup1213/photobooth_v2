@@ -1,6 +1,7 @@
 """
 Helpers for loading the wedding overlay font and persisting overlay text lines.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -47,14 +48,8 @@ def load_overlay_text() -> tuple[str, str]:
     Load persisted overlay text lines, falling back to defaults.
     """
     settings = _settings()
-    line1 = (
-        settings.value(_KEY_LINE1, _DEFAULT_LINE1, type=str)
-        or _DEFAULT_LINE1
-    )
-    line2 = (
-        settings.value(_KEY_LINE2, _DEFAULT_LINE2, type=str)
-        or _DEFAULT_LINE2
-    )
+    line1 = settings.value(_KEY_LINE1, _DEFAULT_LINE1, type=str) or _DEFAULT_LINE1
+    line2 = settings.value(_KEY_LINE2, _DEFAULT_LINE2, type=str) or _DEFAULT_LINE2
     return line1, line2
 
 

@@ -1,6 +1,7 @@
 """
 Single photo capture workflow independent of UI concerns.
 """
+
 from __future__ import annotations
 
 import logging

@@ -1,6 +1,7 @@
 """
 Start screen showing floral header graphic and icon-only action buttons.
 """
+
 from __future__ import annotations
 
 import logging
@@ -88,14 +89,18 @@ class StartScreen(QWidget):
 
         self._qr_label = QLabel(self._banner_container)
         self._qr_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self._qr_label.setAttribute(
+            Qt.WidgetAttribute.WA_TransparentForMouseEvents, True
+        )
         self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self._qr_label.setStyleSheet("background: transparent; border: none;")
         self._qr_label.raise_()
 
         self._title_label = QLabel(self._banner_container)
         self._title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._title_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._title_label.setAttribute(
+            Qt.WidgetAttribute.WA_TranslucentBackground, True
+        )
         self._title_label.setStyleSheet(
             "background: transparent; color: #c84b4b; border: none;"
         )
@@ -103,7 +108,9 @@ class StartScreen(QWidget):
 
         self._subtitle_label = QLabel(self._banner_container)
         self._subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._subtitle_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._subtitle_label.setAttribute(
+            Qt.WidgetAttribute.WA_TranslucentBackground, True
+        )
         self._subtitle_label.setStyleSheet(
             "background: transparent; color: #c84b4b; border: none;"
         )
@@ -118,9 +125,13 @@ class StartScreen(QWidget):
         buttons_layout.setContentsMargins(0, 0, 0, 40)
         buttons_layout.setSpacing(60)
 
-        gallery_btn = self._create_action_button(ASSETS_DIR / "btn_gallery.png", "Galerie")
+        gallery_btn = self._create_action_button(
+            ASSETS_DIR / "btn_gallery.png", "Galerie"
+        )
         photo_btn = self._create_action_button(ASSETS_DIR / "btn_photo.png", "Foto")
-        collage_btn = self._create_action_button(ASSETS_DIR / "btn_collage.png", "Collage")
+        collage_btn = self._create_action_button(
+            ASSETS_DIR / "btn_collage.png", "Collage"
+        )
 
         gallery_btn.clicked.connect(self.gallery_requested.emit)
         photo_btn.clicked.connect(self.photo_requested.emit)

@@ -1,6 +1,7 @@
 """
 Slideshow feature that would render images on a secondary display.
 """
+
 from __future__ import annotations
 
 import logging
@@ -13,7 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class SlideshowFeature:
-    def __init__(self, gallery: GalleryFeature, external_display: ExternalDisplay) -> None:
+    def __init__(
+        self, gallery: GalleryFeature, external_display: ExternalDisplay
+    ) -> None:
         self.gallery = gallery
         self.external_display = external_display
 

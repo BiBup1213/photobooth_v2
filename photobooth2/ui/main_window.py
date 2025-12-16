@@ -1,6 +1,7 @@
 """
 Main window hosting the stacked screens for the photobooth UI.
 """
+
 from __future__ import annotations
 
 import logging
@@ -290,9 +291,7 @@ class MainWindow(QMainWindow):
 
         success = self.controller.delete_image(image)
         if not success:
-            QMessageBox.critical(
-                self, "Löschen", "Bild konnte nicht gelöscht werden."
-            )
+            QMessageBox.critical(self, "Löschen", "Bild konnte nicht gelöscht werden.")
             return
 
         self.gallery_screen.remove_image(image)
@@ -310,7 +309,9 @@ class MainWindow(QMainWindow):
         menu.addSeparator()
         quit_action = menu.addAction("Beenden")
 
-        action = menu.exec(self._menu_button.mapToGlobal(self._menu_button.rect().bottomLeft()))
+        action = menu.exec(
+            self._menu_button.mapToGlobal(self._menu_button.rect().bottomLeft())
+        )
         if action == overlay_action:
             self._open_overlay_text_dialog()
         elif action == settings_action:
@@ -363,7 +364,9 @@ class MainWindow(QMainWindow):
 
         collage_path = self.controller.compose_collage_from_photos(self._collage_shots)
         if collage_path is None:
-            QMessageBox.critical(self, "Fehler", "Collage konnte nicht erstellt werden.")
+            QMessageBox.critical(
+                self, "Fehler", "Collage konnte nicht erstellt werden."
+            )
             self._reset_collage_state()
             self.show_start()
             return

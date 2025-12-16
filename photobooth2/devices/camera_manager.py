@@ -1,6 +1,7 @@
 """
 Central camera manager to switch between DSLR (gPhoto2) and webcam sources.
 """
+
 from __future__ import annotations
 
 import logging

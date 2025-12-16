@@ -1,6 +1,7 @@
 """
 Modal dialog to switch between DSLR and webcam sources.
 """
+
 from __future__ import annotations
 
 from typing import Dict
@@ -105,7 +106,9 @@ class CameraSelectionDialog(QDialog):
         if self._dslr_radio and selected is self._dslr_radio:
             success = self.controller.select_dslr()
             if not success:
-                QMessageBox.critical(self, "Kamera", "DSLR konnte nicht aktiviert werden.")
+                QMessageBox.critical(
+                    self, "Kamera", "DSLR konnte nicht aktiviert werden."
+                )
                 return
             self.accept()
             return

@@ -2,6 +2,7 @@
 Qt application bootstrap: load settings, wire
 controller launch the main window.
 """
+
 from __future__ import annotations
 
 import logging

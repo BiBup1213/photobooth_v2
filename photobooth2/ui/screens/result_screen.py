@@ -1,6 +1,7 @@
 """
 Screen showing the captured photo with print/abort actions and auto-timeout.
 """
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -2,6 +2,7 @@
 Editable QR card text fields with custom font loading for the
 wedding-style overlay.
 """
+
 from __future__ import annotations
 
 from functools import lru_cache

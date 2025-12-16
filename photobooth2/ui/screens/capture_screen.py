@@ -1,6 +1,7 @@
 """
 Screen showing a themed countdown before taking a single photo.
 """
+
 from __future__ import annotations
 
 from PyQt6.QtCore import (

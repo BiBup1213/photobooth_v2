@@ -1,6 +1,7 @@
 """
 Device abstraction for a DSLR camera controlled via gphoto2.
 """
+
 from __future__ import annotations
 
 import logging

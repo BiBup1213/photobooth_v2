@@ -1,6 +1,7 @@
 """
 Gallery screen with grid view and single-image detail view.
 """
+
 from __future__ import annotations
 
 import logging
@@ -109,7 +110,6 @@ class GalleryScreen(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         self._detail_image.setMinimumHeight(0)
-
 
         # Bottom-Bar mit Zurück/Drucken/Löschen
         bottom_bar = QHBoxLayout()

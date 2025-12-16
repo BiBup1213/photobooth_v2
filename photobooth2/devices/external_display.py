@@ -1,6 +1,7 @@
 """
 Abstraction for handling a secondary display.
 """
+
 from __future__ import annotations
 
 import logging

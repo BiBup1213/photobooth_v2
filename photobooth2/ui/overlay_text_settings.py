@@ -1,6 +1,7 @@
 """
 Dialog for editing the two overlay text lines shown under the QR code.
 """
+
 from __future__ import annotations
 
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -43,7 +44,10 @@ class OverlayTextSettingsDialog(QDialog):
 
         layout.addLayout(form)
 
-        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Cancel)
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Save
+            | QDialogButtonBox.StandardButton.Cancel
+        )
         buttons.accepted.connect(self._on_save)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
