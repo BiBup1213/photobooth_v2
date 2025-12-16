@@ -87,6 +87,7 @@ class GalleryScreen(QWidget):
         # Bottom bar for gallery back button with padding
         grid_buttons = QHBoxLayout()
         grid_buttons.setContentsMargins(12, 8, 12, 12)
+
         back_icon = self._load_icon("back.png")
         self._grid_back_btn = self._create_icon_button(back_icon)
         self._grid_back_btn.clicked.connect(self.back_requested.emit)
@@ -105,12 +106,15 @@ class GalleryScreen(QWidget):
 
         self._detail_image = QLabel()
         self._detail_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._detail_image.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self._detail_image.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         self._detail_image.setMinimumHeight(0)
 
         # Bottom-Bar mit Zurück/Drucken/Löschen
         bottom_bar = QHBoxLayout()
         bottom_bar.setContentsMargins(12, 8, 12, 12)
+
         self._detail_back_btn = self._create_icon_button(self._load_icon("back.png"))
         self._detail_back_btn.clicked.connect(self._show_grid)
 
@@ -132,27 +136,42 @@ class GalleryScreen(QWidget):
 
         self._show_grid()
 
+    # ---------------------------------------------------------------- Buttons
+
     def _create_icon_button(self, icon: QIcon | None) -> QPushButton:
+        """
+        Icon-only button:
+        - no background fill
+        - no border / radius
+        - no padding (PNG defines the look)
+        """
         btn = QPushButton()
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn.setFixedSize(64, 64)
+        btn.setFlat(True)
+        btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+        # Keep a consistent click area (but without drawing a background)
+        btn.setFixedSize(96, 96)
+
         if icon:
             btn.setIcon(icon)
-            btn.setIconSize(QSize(32, 32))
+            # IMPORTANT: match icon to button if your PNG is already "designed"
+            btn.setIconSize(QSize(96, 96))
+
         btn.setStyleSheet(
             """
             QPushButton {
-                background-color: #5a7a6b;
-                color: white;
+                background: transparent;
                 border: none;
-                border-radius: 12px;
-                padding: 10px;
+                padding: 0px;
             }
             QPushButton:hover {
-                background-color: #6c8c7d;
+                background: transparent;
+                border: none;
             }
             QPushButton:pressed {
-                background-color: #4a6a5b;
+                background: transparent;
+                border: none;
             }
             """
         )
