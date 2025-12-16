@@ -7,8 +7,15 @@ from __future__ import annotations
 from typing import Dict
 
 from photobooth2.controller.app_controller import AppController
-from PyQt6.QtWidgets import (QButtonGroup, QDialog, QDialogButtonBox, QLabel,
-                             QMessageBox, QRadioButton, QVBoxLayout)
+from PyQt6.QtWidgets import (
+    QButtonGroup,
+    QDialog,
+    QDialogButtonBox,
+    QLabel,
+    QMessageBox,
+    QRadioButton,
+    QVBoxLayout,
+)
 
 
 class CameraSelectionDialog(QDialog):
@@ -84,9 +91,7 @@ class CameraSelectionDialog(QDialog):
         if not self._button_group.buttons():
             self._options_container.addWidget(QLabel("Keine Kameras gefunden."))
             if self._ok_button:
-                self._ok_button.button(QDialogButtonBox.StandardButton.Ok).setEnabled(
-                    False
-                )
+                self._ok_button.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
 
     def _on_accept(self) -> None:
         selected = self._button_group.checkedButton()
@@ -98,9 +103,7 @@ class CameraSelectionDialog(QDialog):
         if self._dslr_radio and selected is self._dslr_radio:
             success = self.controller.select_dslr()
             if not success:
-                QMessageBox.critical(
-                    self, "Kamera", "DSLR konnte nicht aktiviert werden."
-                )
+                QMessageBox.critical(self, "Kamera", "DSLR konnte nicht aktiviert werden.")
                 return
             self.accept()
             return

@@ -4,11 +4,16 @@ Screen showing a themed countdown before taking a single photo.
 
 from __future__ import annotations
 
-from PyQt6.QtCore import (QEasingCurve, QPropertyAnimation, Qt, QTimer,
-                          pyqtSignal)
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import (QGraphicsOpacityEffect, QHBoxLayout, QLabel,
-                             QPushButton, QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import (
+    QGraphicsOpacityEffect,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class CaptureScreen(QWidget):

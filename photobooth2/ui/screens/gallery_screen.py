@@ -10,9 +10,17 @@ from typing import List
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap
-from PyQt6.QtWidgets import (QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
-                             QPushButton, QSizePolicy, QStackedWidget,
-                             QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QListWidgetItem,
+    QPushButton,
+    QSizePolicy,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 logger = logging.getLogger(__name__)
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
@@ -98,9 +106,7 @@ class GalleryScreen(QWidget):
 
         self._detail_image = QLabel()
         self._detail_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._detail_image.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        self._detail_image.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._detail_image.setMinimumHeight(0)
 
         # Bottom-Bar mit Zurück/Drucken/Löschen

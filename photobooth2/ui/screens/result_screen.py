@@ -9,8 +9,7 @@ from pathlib import Path
 from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtWidgets import (QHBoxLayout, QLabel, QPushButton, QVBoxLayout,
-                             QWidget)
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
@@ -28,15 +27,9 @@ class ResultScreen(QWidget):
         self._actions_visible = True
 
         self._image_label = QLabel("Kein Bild")
-        self._image_label.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
-        self._image_label.setStyleSheet(
-            "background-color: black; color: white;"
-        )
-        self._image_label.setMinimumSize(
-            400, 300
-        )
+        self._image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._image_label.setStyleSheet("background-color: black; color: white;")
+        self._image_label.setMinimumSize(400, 300)
 
         self._home_button = QPushButton()
         self._home_button.setCursor(Qt.CursorShape.PointingHandCursor)

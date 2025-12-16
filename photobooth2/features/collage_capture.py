@@ -48,9 +48,7 @@ class CollageCaptureFeature:
         if self.collage_overlay_path and self.collage_overlay_path.exists():
             collage = self._apply_overlay(collage, self.collage_overlay_path)
 
-        collage_path = (
-            self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
-        )
+        collage_path = self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
         collage.save(collage_path, format="JPEG", quality=90)
         logger.info("Collage saved to %s", collage_path)
         return collage_path
@@ -65,9 +63,7 @@ class CollageCaptureFeature:
         if self.collage_overlay_path and self.collage_overlay_path.exists():
             collage = self._apply_overlay(collage, self.collage_overlay_path)
 
-        collage_path = (
-            self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
-        )
+        collage_path = self.output_dir / f"collage_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
         collage.save(collage_path, format="JPEG", quality=90)
         logger.info("Collage saved to %s", collage_path)
         return collage_path

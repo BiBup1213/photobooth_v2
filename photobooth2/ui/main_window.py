@@ -9,16 +9,14 @@ from pathlib import Path
 
 from photobooth2.config.loader import Settings
 from photobooth2.controller.app_controller import AppController
-from photobooth2.ui.dialogs.camera_selection_dialog import \
-    CameraSelectionDialog
+from photobooth2.ui.dialogs.camera_selection_dialog import CameraSelectionDialog
 from photobooth2.ui.overlay_text_settings import OverlayTextSettingsDialog
 from photobooth2.ui.screens.capture_screen import CaptureScreen
 from photobooth2.ui.screens.gallery_screen import GalleryScreen
 from photobooth2.ui.screens.result_screen import ResultScreen
 from photobooth2.ui.screens.start_screen import StartScreen
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import (QMainWindow, QMenu, QMessageBox, QPushButton,
-                             QStackedWidget)
+from PyQt6.QtWidgets import QMainWindow, QMenu, QMessageBox, QPushButton, QStackedWidget
 
 logger = logging.getLogger(__name__)
 
@@ -72,9 +70,7 @@ class MainWindow(QMainWindow):
         self.start_screen.gallery_requested.connect(self._handle_gallery)
 
         # Capture-Screen Aktionen
-        self.capture_screen.countdown_finished.connect(
-            self._on_capture_countdown_finished
-        )
+        self.capture_screen.countdown_finished.connect(self._on_capture_countdown_finished)
         self.capture_screen.close_requested.connect(self._on_capture_close_requested)
 
         # Result-Screen Aktionen
@@ -240,13 +236,9 @@ class MainWindow(QMainWindow):
 
         success = self.controller.print_image(self._last_result_path)
         if success:
-            QMessageBox.information(
-                self, "Drucken", "Bild wurde an den Drucker gesendet."
-            )
+            QMessageBox.information(self, "Drucken", "Bild wurde an den Drucker gesendet.")
         else:
-            QMessageBox.critical(
-                self, "Drucken", "Druckauftrag konnte nicht gestartet werden."
-            )
+            QMessageBox.critical(self, "Drucken", "Druckauftrag konnte nicht gestartet werden.")
         self.show_start()
 
     def _on_result_cancel_requested(self) -> None:
@@ -263,13 +255,9 @@ class MainWindow(QMainWindow):
     def _on_gallery_print_requested(self, image: Path) -> None:
         success = self.controller.print_image(image)
         if success:
-            QMessageBox.information(
-                self, "Drucken", "Bild wurde an den Drucker gesendet."
-            )
+            QMessageBox.information(self, "Drucken", "Bild wurde an den Drucker gesendet.")
         else:
-            QMessageBox.critical(
-                self, "Drucken", "Druckauftrag konnte nicht gestartet werden."
-            )
+            QMessageBox.critical(self, "Drucken", "Druckauftrag konnte nicht gestartet werden.")
 
     def _on_gallery_delete_requested(self, image: Path) -> None:
         reply = QMessageBox.question(
@@ -302,9 +290,7 @@ class MainWindow(QMainWindow):
         menu.addSeparator()
         quit_action = menu.addAction("Beenden")
 
-        action = menu.exec(
-            self._menu_button.mapToGlobal(self._menu_button.rect().bottomLeft())
-        )
+        action = menu.exec(self._menu_button.mapToGlobal(self._menu_button.rect().bottomLeft()))
         if action == overlay_action:
             self._open_overlay_text_dialog()
         elif action == settings_action:
@@ -357,9 +343,7 @@ class MainWindow(QMainWindow):
 
         collage_path = self.controller.compose_collage_from_photos(self._collage_shots)
         if collage_path is None:
-            QMessageBox.critical(
-                self, "Fehler", "Collage konnte nicht erstellt werden."
-            )
+            QMessageBox.critical(self, "Fehler", "Collage konnte nicht erstellt werden.")
             self._reset_collage_state()
             self.show_start()
             return

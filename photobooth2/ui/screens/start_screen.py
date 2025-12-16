@@ -8,12 +8,18 @@ import logging
 from pathlib import Path
 
 from photobooth2.config.loader import Settings
-from photobooth2.ui.overlay_text_store import (load_andrea_bellarosa_font,
-                                               load_overlay_text)
+from photobooth2.ui.overlay_text_store import load_andrea_bellarosa_font, load_overlay_text
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap
-from PyQt6.QtWidgets import (QHBoxLayout, QLabel, QPushButton, QSizePolicy,
-                             QStackedLayout, QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QStackedLayout,
+    QVBoxLayout,
+    QWidget,
+)
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
@@ -34,9 +40,7 @@ class StartScreen(QWidget):
         self._floral_pixmap: QPixmap | None = self._load_pixmap(
             ASSETS_DIR / "main_banner_floral.png"
         )
-        self._qr_pixmap: QPixmap | None = self._load_pixmap(
-            ASSETS_DIR / "qr" / "qr_gallery.png"
-        )
+        self._qr_pixmap: QPixmap | None = self._load_pixmap(ASSETS_DIR / "qr" / "qr_gallery.png")
         self._floral_label: QLabel | None = None
         self._qr_label: QLabel | None = None
         self._banner_container: QWidget | None = None
@@ -70,40 +74,28 @@ class StartScreen(QWidget):
 
         self._floral_label = QLabel()
         self._floral_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._floral_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
+        self._floral_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._floral_label.setStyleSheet("background: transparent;")
 
         banner_stack.addWidget(self._floral_label)
 
         self._qr_label = QLabel(self._banner_container)
         self._qr_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._qr_label.setAttribute(
-            Qt.WidgetAttribute.WA_TransparentForMouseEvents, True
-        )
+        self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self._qr_label.setStyleSheet("background: transparent; border: none;")
         self._qr_label.raise_()
 
         self._title_label = QLabel(self._banner_container)
         self._title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._title_label.setAttribute(
-            Qt.WidgetAttribute.WA_TranslucentBackground, True
-        )
-        self._title_label.setStyleSheet(
-            "background: transparent; color: #c84b4b; border: none;"
-        )
+        self._title_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._title_label.setStyleSheet("background: transparent; color: #c84b4b; border: none;")
         self._title_label.setFixedHeight(34)
 
         self._subtitle_label = QLabel(self._banner_container)
         self._subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._subtitle_label.setAttribute(
-            Qt.WidgetAttribute.WA_TranslucentBackground, True
-        )
-        self._subtitle_label.setStyleSheet(
-            "background: transparent; color: #c84b4b; border: none;"
-        )
+        self._subtitle_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._subtitle_label.setStyleSheet("background: transparent; color: #c84b4b; border: none;")
         self._subtitle_label.setFixedHeight(30)
 
         layout.addWidget(self._banner_container, stretch=3)
@@ -115,13 +107,9 @@ class StartScreen(QWidget):
         buttons_layout.setContentsMargins(0, 0, 0, 40)
         buttons_layout.setSpacing(60)
 
-        gallery_btn = self._create_action_button(
-            ASSETS_DIR / "btn_gallery.png", "Galerie"
-        )
+        gallery_btn = self._create_action_button(ASSETS_DIR / "btn_gallery.png", "Galerie")
         photo_btn = self._create_action_button(ASSETS_DIR / "btn_photo.png", "Foto")
-        collage_btn = self._create_action_button(
-            ASSETS_DIR / "btn_collage.png", "Collage"
-        )
+        collage_btn = self._create_action_button(ASSETS_DIR / "btn_collage.png", "Collage")
 
         gallery_btn.clicked.connect(self.gallery_requested.emit)
         photo_btn.clicked.connect(self.photo_requested.emit)
@@ -271,9 +259,7 @@ class StartScreen(QWidget):
         if self._subtitle_label:
             self._subtitle_label.setText(line2)
             if self._overlay_font_family:
-                self._subtitle_label.setFont(
-                    QFont(self._overlay_font_family, 16)
-                )
+                self._subtitle_label.setFont(QFont(self._overlay_font_family, 16))
 
     def _load_overlay_font(self) -> str | None:
         try:

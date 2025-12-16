@@ -28,11 +28,7 @@ def load_settings(settings_path: str | Path | None = None) -> Settings:
     or invalid so the app can still start in a safe state.
     """
 
-    path = (
-        Path(settings_path)
-        if settings_path
-        else Path(__file__).with_name("settings.toml")
-    )
+    path = Path(settings_path) if settings_path else Path(__file__).with_name("settings.toml")
     settings = Settings()
 
     if not path.exists():
@@ -56,15 +52,11 @@ def load_settings(settings_path: str | Path | None = None) -> Settings:
     settings.event_date = str(event.get("date", settings.event_date))
     settings.qr_url = str(event.get("qr_url", settings.qr_url))
 
-    settings.output_dir = (
-        Path(paths.get("output_dir", settings.output_dir)).expanduser().resolve()
-    )
+    settings.output_dir = Path(paths.get("output_dir", settings.output_dir)).expanduser().resolve()
     settings.collage_count = int(collage.get("photo_count", settings.collage_count))
 
     overlay = collage.get("overlay")
-    settings.collage_overlay_path = (
-        Path(overlay).expanduser().resolve() if overlay else None
-    )
+    settings.collage_overlay_path = Path(overlay).expanduser().resolve() if overlay else None
 
     _ensure_output_dir(settings.output_dir)
     return settings
