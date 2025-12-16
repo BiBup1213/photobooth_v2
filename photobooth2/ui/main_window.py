@@ -7,25 +7,18 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import (
-    QMainWindow,
-    QMessageBox,
-    QStackedWidget,
-    QPushButton,
-    QMenu,
-)
-
 from photobooth2.config.loader import Settings
 from photobooth2.controller.app_controller import AppController
-from photobooth2.ui.dialogs.camera_selection_dialog import (
-    CameraSelectionDialog,
-)
+from photobooth2.ui.dialogs.camera_selection_dialog import \
+    CameraSelectionDialog
+from photobooth2.ui.overlay_text_settings import OverlayTextSettingsDialog
 from photobooth2.ui.screens.capture_screen import CaptureScreen
 from photobooth2.ui.screens.gallery_screen import GalleryScreen
 from photobooth2.ui.screens.result_screen import ResultScreen
 from photobooth2.ui.screens.start_screen import StartScreen
-from photobooth2.ui.overlay_text_settings import OverlayTextSettingsDialog
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import (QMainWindow, QMenu, QMessageBox, QPushButton,
+                             QStackedWidget)
 
 logger = logging.getLogger(__name__)
 

@@ -5,8 +5,8 @@ Central controller that wires UI events to domain features and devices.
 from __future__ import annotations
 
 import logging
-from typing import Callable
 from pathlib import Path
+from typing import Callable
 
 from photobooth2.config.loader import Settings
 from photobooth2.devices.camera_manager import CameraManager

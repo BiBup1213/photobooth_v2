@@ -9,9 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List
 
-from PIL import Image, ImageOps
-
 from photobooth2.devices.camera_manager import CameraManager
+from PIL import Image, ImageOps
 
 logger = logging.getLogger(__name__)
 

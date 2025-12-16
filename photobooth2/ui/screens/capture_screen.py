@@ -4,22 +4,11 @@ Screen showing a themed countdown before taking a single photo.
 
 from __future__ import annotations
 
-from PyQt6.QtCore import (
-    QTimer,
-    Qt,
-    pyqtSignal,
-    QPropertyAnimation,
-    QEasingCurve,
-)
+from PyQt6.QtCore import (QEasingCurve, QPropertyAnimation, Qt, QTimer,
+                          pyqtSignal)
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import (
-    QGraphicsOpacityEffect,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import (QGraphicsOpacityEffect, QHBoxLayout, QLabel,
+                             QPushButton, QVBoxLayout, QWidget)
 
 
 class CaptureScreen(QWidget):
@@ -87,13 +76,13 @@ class CaptureScreen(QWidget):
         root.addWidget(self._message_label, alignment=Qt.AlignmentFlag.AlignCenter)
         root.addWidget(self._count_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        self._cancel_button = QPushButton("Cancel")
+        self._cancel_button = QPushButton("Abbrechen")
         self._cancel_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._cancel_button.setMinimumHeight(64)
         self._cancel_button.setStyleSheet(
             """
             QPushButton {
-                background-color: #5a7a6b;
+                background-color: #5a4c3b;
                 color: white;
                 border: none;
                 border-radius: 10px;
@@ -101,7 +90,7 @@ class CaptureScreen(QWidget):
                 font-size: 28px;
                 font-weight: 600;
             }
-            QPushButton:hover { background-color: #6c8c7d; }
+            QPushButton:hover { background-color: #907A5F; }
             QPushButton:pressed { background-color: #4a6a5b; }
             """
         )

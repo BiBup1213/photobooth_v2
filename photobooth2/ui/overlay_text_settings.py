@@ -42,8 +42,8 @@ class OverlayTextSettingsDialog(QDialog):
         self._line2_edit.setMaxLength(30)
         self._line2_edit.setPlaceholderText("Datum")
 
-        form.addRow("Zeile 1", self._line1_edit)
-        form.addRow("Zeile 2", self._line2_edit)
+        form.addRow("Namen", self._line1_edit)
+        form.addRow("Datum", self._line2_edit)
 
         layout.addLayout(form)
 

@@ -7,23 +7,13 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QFont, QIcon, QPixmap
-from PyQt6.QtWidgets import (
-    QLabel,
-    QPushButton,
-    QStackedLayout,
-    QSizePolicy,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget,
-)
-
 from photobooth2.config.loader import Settings
-from photobooth2.ui.overlay_text_store import (
-    load_andrea_bellarosa_font,
-    load_overlay_text,
-)
+from photobooth2.ui.overlay_text_store import (load_andrea_bellarosa_font,
+                                               load_overlay_text)
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QFont, QIcon, QPixmap
+from PyQt6.QtWidgets import (QHBoxLayout, QLabel, QPushButton, QSizePolicy,
+                             QStackedLayout, QVBoxLayout, QWidget)
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
@@ -281,7 +271,9 @@ class StartScreen(QWidget):
         if self._subtitle_label:
             self._subtitle_label.setText(line2)
             if self._overlay_font_family:
-                self._subtitle_label.setFont(QFont(self._overlay_font_family, 16))
+                self._subtitle_label.setFont(
+                    QFont(self._overlay_font_family, 16)
+                )
 
     def _load_overlay_font(self) -> str | None:
         try:
