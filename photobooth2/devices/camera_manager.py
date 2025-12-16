@@ -4,11 +4,11 @@ Central camera manager to switch between DSLR (gPhoto2) and webcam sources.
 
 from __future__ import annotations
 
+from datetime import datetime
 import logging
+from pathlib import Path
 import shutil
 import subprocess
-from datetime import datetime
-from pathlib import Path
 from typing import Callable
 
 try:

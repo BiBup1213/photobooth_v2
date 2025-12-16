@@ -1,15 +1,15 @@
 [flake8]
-# Align with Black (line-length) + small buffer
-max-line-length = 100
+max-line-length = 90
 
-# Sinnvolle Defaults
+# Black compatibility:
+# - E203: whitespace before ':'
+# - W503: line break before binary operator
 extend-ignore =
-    E203,  # whitespace before ':' (Black-kompatibel)
-    W503   # line break before binary operator (Black-kompatibel)
+    E203,
+    W503
 
-# Optional, aber oft angenehm (reduziert Noise)
 per-file-ignores =
-    __init__.py:F401  # "imported but unused" in package exports
+    __init__.py:F401
 
 exclude =
     .git,

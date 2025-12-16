@@ -8,6 +8,8 @@ from __future__ import annotations
 import logging
 import sys
 
+from PyQt6.QtWidgets import QApplication
+
 from photobooth2.config.loader import Settings, load_settings
 from photobooth2.controller.app_controller import AppController
 from photobooth2.devices.camera_manager import CameraManager
@@ -19,7 +21,6 @@ from photobooth2.features.gallery import GalleryFeature
 from photobooth2.features.single_photo import SinglePhotoFeature
 from photobooth2.features.slideshow import SlideshowFeature
 from photobooth2.ui.main_window import MainWindow
-from PyQt6.QtWidgets import QApplication
 
 logger = logging.getLogger(__name__)
 

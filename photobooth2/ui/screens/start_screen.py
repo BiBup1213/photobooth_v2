@@ -7,8 +7,6 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from photobooth2.config.loader import Settings
-from photobooth2.ui.overlay_text_store import load_andrea_bellarosa_font, load_overlay_text
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
@@ -20,6 +18,9 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from photobooth2.config.loader import Settings
+from photobooth2.ui.overlay_text_store import load_andrea_bellarosa_font, load_overlay_text
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 

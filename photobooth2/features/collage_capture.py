@@ -4,13 +4,14 @@ Collage capture workflow using Pillow to compose multiple photographs.
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime
+import logging
 from pathlib import Path
 from typing import Iterable, List
 
-from photobooth2.devices.camera_manager import CameraManager
 from PIL import Image, ImageOps
+
+from photobooth2.devices.camera_manager import CameraManager
 
 logger = logging.getLogger(__name__)
 

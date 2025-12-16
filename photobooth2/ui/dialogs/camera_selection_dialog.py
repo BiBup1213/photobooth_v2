@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import Dict
 
-from photobooth2.controller.app_controller import AppController
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QDialog,
@@ -16,6 +15,8 @@ from PyQt6.QtWidgets import (
     QRadioButton,
     QVBoxLayout,
 )
+
+from photobooth2.controller.app_controller import AppController
 
 
 class CameraSelectionDialog(QDialog):
