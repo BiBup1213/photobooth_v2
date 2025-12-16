@@ -10,6 +10,7 @@ from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QLabel,
     QPushButton,
+    QStackedLayout,
     QSizePolicy,
     QVBoxLayout,
     QHBoxLayout,
@@ -31,15 +32,20 @@ class StartScreen(QWidget):
         self.settings = settings
 
         # complete window background beige
-        self.setStyleSheet("background-color: #f3e7d3;")
 
         self._floral_pixmap: QPixmap | None = self._load_pixmap(
             ASSETS_DIR / "main_banner_floral.png"
         )
+        self._qr_pixmap: QPixmap | None = self._load_pixmap(
+            ASSETS_DIR / "qr" / "qr_gallery.png"
+        )
         self._floral_label: QLabel | None = None
+        self._qr_label: QLabel | None = None
+        self._banner_container: QWidget | None = None
 
         self._build_ui()
         self._update_floral_pixmap()
+        self._position_qr()
 
     # ------------------------------------------------------------------
     def _build_ui(self) -> None:
@@ -50,15 +56,33 @@ class StartScreen(QWidget):
         # -------------------------------------------------
         # FLORAL HEADER (PNG centered, no frame)
         # -------------------------------------------------
+        self._banner_container = QWidget()
+        self._banner_container.setMinimumHeight(420)
+        self._banner_container.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+
+        banner_stack = QStackedLayout(self._banner_container)
+        banner_stack.setContentsMargins(0, 0, 0, 0)
+        banner_stack.setStackingMode(QStackedLayout.StackingMode.StackAll)
+
         self._floral_label = QLabel()
         self._floral_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._floral_label.setMinimumHeight(420)
         self._floral_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         self._floral_label.setStyleSheet("background: transparent;")
 
-        layout.addWidget(self._floral_label, stretch=3)
+        banner_stack.addWidget(self._floral_label)
+
+        self._qr_label = QLabel(self._banner_container)
+        self._qr_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self._qr_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._qr_label.setStyleSheet("background: transparent; border: none;")
+        self._qr_label.raise_()
+
+        layout.addWidget(self._banner_container, stretch=3)
 
         # -------------------------------------------------
         # BUTTONS (icon-only, centered)
@@ -147,7 +171,55 @@ class StartScreen(QWidget):
         )
         self._floral_label.setPixmap(scaled)
 
+    def _position_qr(self) -> None:
+        if not self._qr_label:
+            return
+        if not self._qr_pixmap:
+            self._qr_label.clear()
+            self._qr_label.resize(0, 0)
+            return
+        if not self._floral_label:
+            return
+
+        rendered = self._floral_label.pixmap()
+        if rendered is None or rendered.isNull():
+            self._qr_label.clear()
+            self._qr_label.resize(0, 0)
+            return
+
+        label_size = self._floral_label.size()
+        pm_size = rendered.size()
+        pm_w, pm_h = pm_size.width(), pm_size.height()
+        if pm_w <= 0 or pm_h <= 0:
+            self._qr_label.clear()
+            self._qr_label.resize(0, 0)
+            return
+
+        off_x = (label_size.width() - pm_w) // 2
+        off_y = (label_size.height() - pm_h) // 2
+
+        qr_size = int(pm_w * 0.26)
+        qr_size = max(120, min(qr_size, 320))
+
+        scaled_qr = self._qr_pixmap.scaled(
+            QSize(qr_size, qr_size),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        self._qr_label.setPixmap(scaled_qr)
+        self._qr_label.resize(scaled_qr.size())
+
+        slot_center_x = off_x + int(pm_w * 0.50)
+        slot_center_y = off_y + int(pm_h * 0.36)
+
+        top_left_x = slot_center_x - scaled_qr.width() // 2
+        top_left_y = slot_center_y - scaled_qr.height() // 2
+
+        self._qr_label.move(top_left_x, top_left_y)
+        self._qr_label.raise_()
+
     # ------------------------------------------------------------------
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self._update_floral_pixmap()
+        self._position_qr()
