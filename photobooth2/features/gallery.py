@@ -1,6 +1,7 @@
 """
 Gallery feature that lists and loads captured assets.
 """
+
 from __future__ import annotations
 
 import logging
@@ -25,11 +26,7 @@ class GalleryFeature:
             return []
 
         candidates: Iterable[Path] = self.output_dir.iterdir()
-        images = [
-            path
-            for path in candidates
-            if path.suffix.lower() in {".jpg", ".jpeg", ".png"}
-        ]
+        images = [path for path in candidates if path.suffix.lower() in {".jpg", ".jpeg", ".png"}]
         return sorted(images, key=lambda p: p.stat().st_mtime, reverse=True)
 
     def load_image(self, path: Path) -> Image.Image | None:
@@ -43,3 +40,16 @@ class GalleryFeature:
         except Exception as exc:
             logger.error("Failed to load image %s: %s", path, exc)
         return None
+
+    def delete_image(self, path: Path) -> None:
+        """
+        Delete an image file from disk. Does not raise if file is missing.
+        """
+        try:
+            path.unlink()
+            logger.info("Deleted image %s", path)
+        except FileNotFoundError:
+            logger.warning("Tried to delete non-existent image %s", path)
+        except OSError as exc:
+            logger.error("Failed to delete image %s: %s", path, exc)
+            raise

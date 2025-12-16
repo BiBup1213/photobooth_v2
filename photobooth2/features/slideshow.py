@@ -1,6 +1,7 @@
 """
 Slideshow feature that would render images on a secondary display.
 """
+
 from __future__ import annotations
 
 import logging

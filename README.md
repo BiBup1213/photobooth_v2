@@ -1,100 +1,75 @@
-# photobooth_v2
-Modulare Photobooth-Software mit PyQt6-Touch-UI, DSLR-Ansteuerung über gPhoto2, Live-Preview, Collagen-Funktion und flexiblem Multi-Screen-Setup. Entwickelt für Events, Hochzeiten und automatisierte Workflows.
+# Photobooth 2.0
+Touch-optimierte Photobooth-Anwendung auf Basis von Python, PyQt6 und gPhoto2. Unterstützt DSLR (gPhoto2) oder Webcam, Collagen, Galerie mit Drucken/Löschen und arbeitet im Vollbild für Event-Setups.
 
-📸 Photobooth 2.0
+## Features
+- Touch-UI mit großen Buttons und Vollbild (PyQt6).
+- Einzelbild und Collage-Workflow (optional mit PNG-Overlay).
+- Kameraauswahl: bevorzugt DSLR via gPhoto2, Fallback auf Webcam (OpenCV).
+- Galerie mit Grid-Ansicht, Detailansicht, Drucken und Löschen.
+- Druck über das System-Backend (`lp`/CUPS); optionaler externer Bildschirm (Stub).
 
-Eine modulare Photobooth-Software auf Basis von Python 3, PyQt6 und gPhoto2.
-Das System bietet eine Touch-optimierte Benutzeroberfläche, DSLR-Steuerung, Live-Preview, Collagen-Modus, Mehrbildschirm-Unterstützung und eine erweiterbare Modularchitektur.
+## Voraussetzungen
+- Python 3.11+ empfohlen.
+- System: Linux/macOS/Windows (DSLR benötigt gPhoto2 → primär Linux).
+- Pakete (Python): `PyQt6`, `Pillow`, optional `opencv-python` (für Webcam).
+- DSLR: `gphoto2` und `libgphoto2` installiert und auf `PATH`.
+- Drucken: funktionierendes `lp`/CUPS-Setup, falls genutzt.
 
-🚀 Features
+## Setup
+```bash
+git clone <dein-fork-oder-url>/photobooth_v2.git
+cd photobooth_v2
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install PyQt6 Pillow opencv-python  # opencv optional, aber nötig für Webcam
+```
 
-PyQt6 Touch-UI
-Vollbild, für Events optimiert, große Buttons, klare Navigation.
+## Starten
+```bash
+python -m photobooth2      # ruft photobooth2/main.py auf
+```
+Die App öffnet im Vollbild; oben rechts ist ein Schließen-Button, oben links ein Menü/Hamburger.
 
-DSLR-Anbindung via gPhoto2
-Aufnahme, Live-View, Dateihandling.
+## Konfiguration
+Datei: `photobooth2/config/settings.toml` (falls fehlt, werden Defaults genutzt und `output/` angelegt).
+```toml
+[event]
+name = "Eure Fotobox"
+date = "2024-12-31"
+qr_url = "https://example.com/gallery"
 
-Webcam-Unterstützung (für Live-Preview oder Alternative zur DSLR)
+[paths]
+output_dir = "output"      # Speicherort für Fotos/Collagen
 
-Mehrbildschirm-Setup
-Hauptsteuerung auf Touchscreen, Live-Preview oder Slideshow auf externem Bildschirm.
+[collage]
+photo_count = 4            # Anzahl Aufnahmen pro Collage
+# overlay = "assets/floral_overlay.png"  # optionales PNG (RGBA), wird über Collage gelegt
+```
+- `output_dir` wird beim Start erzeugt, wenn nicht vorhanden.
+- `photo_count` steuert die Collage-Schritte; >4 wird auf 4 begrenzt.
+- `overlay`: optionaler Pfad zu einem PNG mit Alphakanal, das über die Collage gelegt wird.
 
-Modulare Logik
-Separate Module für:
+## Verzeichnisstruktur
+```
+photobooth2/
+├── main.py                 # Einstiegspunkt (python -m photobooth2)
+├── config/loader.py        # Settings laden, Default-Ausgabeordner anlegen
+├── controller/             # AppController verbindet UI mit Geräten/Features
+├── devices/                # DSLR (gphoto2), Webcam (OpenCV), Printer (lp), ExternalDisplay stub
+├── features/               # Single-Foto, Collage (Pillow), Galerie, Slideshow stub
+└── ui/                     # Qt-Fenster, Screens, Dialoge, Assets
+output/                     # gespeicherte Fotos/Collagen (wird automatisch erstellt)
+```
 
-Einzelfoto
+## Hinweise zu Hardware
+- **DSLR (gPhoto2, Linux)**  
+  ```bash
+  sudo apt install gphoto2 libgphoto2-dev
+  gphoto2 --auto-detect
+  gphoto2 --capture-image-and-download
+  ```
+- **Webcam**: benötigt `opencv-python`; die App wählt automatisch die erste verfügbare Kamera, wenn keine DSLR gefunden wird.
+- **Druck**: `lp <datei>` muss funktionieren; optional kann in `Printer(queue_name=...)` ein Queue-Name hinterlegt werden.
 
-Collage-Funktion
-
-Kamera-Steuerung
-
-UI-Screens
-
-Event-Flows
-
-Bildverarbeitung
-Speicherung, temporäre Ordner, optionale Filter.
-
-📁 Projektstruktur (aktuell/ geplant)
-photobooth/
-│
-├── core/
-│   ├── camera/
-│   ├── logic/
-│   ├── utils/
-│   └── events/
-│
-├── ui/
-│   ├── screens/
-│   ├── components/
-│   └── icons/
-│
-├── modes/
-│   ├── single_photo/
-│   └── collage/
-│
-├── assets/
-│   └── templates/   # Rahmen, Overlays usw.
-│
-├── output/
-│   └── photos/      # Generierte Fotos (im .gitignore)
-│
-├── requirements.txt
-└── main.py
-
-🔧 Installation
-1. Repository klonen
-git clone https://github.com/<dein-name>/photobooth-2.0.git
-cd photobooth-2.0
-
-2. Virtuelle Umgebung
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-3. Abhängigkeiten installieren
-pip install -r requirements.txt
-
-4. Starten
-python main.py
-
-📷 DSLR-Unterstützung (Linux)
-
-Voraussetzung:
-
-sudo apt install gphoto2 libgphoto2-dev
-
-
-Testen:
-
-gphoto2 --auto-detect
-gphoto2 --capture-image-and-download
-
-🧪 Entwicklungsstatus
-
-Aktive Entwicklung.
-Module, UI und Logik werden iterativ erweitert.
-Struktur und Architektur können sich noch ändern.
-
-📄 Lizenz
-
-(Bei Bedarf ergänzen.)
+## Status
+Aktive Entwicklung. Slideshow/ExternalDisplay sind als Stub vorhanden, funktionieren aber noch nicht produktiv.

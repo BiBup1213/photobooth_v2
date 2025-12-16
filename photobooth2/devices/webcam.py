@@ -1,6 +1,7 @@
 """
 Placeholder for webcam integration (live preview planned for later versions).
 """
+
 from __future__ import annotations
 
 import logging
