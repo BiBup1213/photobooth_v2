@@ -4,8 +4,6 @@ Modal dialog to switch between DSLR and webcam sources.
 
 from __future__ import annotations
 
-from typing import Dict
-
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QDialog,
@@ -29,7 +27,7 @@ class CameraSelectionDialog(QDialog):
         self.setModal(True)
 
         self._button_group = QButtonGroup(self)
-        self._radio_webcams: Dict[int, QRadioButton] = {}
+        self._radio_webcams: dict[int, QRadioButton] = {}
         self._dslr_radio: QRadioButton | None = None
         self._ok_button: QDialogButtonBox | None = None
 

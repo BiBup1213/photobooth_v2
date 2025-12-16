@@ -4,11 +4,11 @@ Device abstraction for a DSLR camera controlled via gphoto2.
 
 from __future__ import annotations
 
-from datetime import datetime
 import logging
-from pathlib import Path
 import shutil
 import subprocess
+from datetime import datetime
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 

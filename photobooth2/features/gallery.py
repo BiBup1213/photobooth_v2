@@ -5,8 +5,8 @@ Gallery feature that lists and loads captured assets.
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List
 
 from PIL import Image
 
@@ -17,7 +17,7 @@ class GalleryFeature:
     def __init__(self, output_dir: Path) -> None:
         self.output_dir = output_dir
 
-    def list_images(self) -> List[Path]:
+    def list_images(self) -> list[Path]:
         """
         Return image files sorted by modification time (newest first).
         """

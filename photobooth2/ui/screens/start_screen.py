@@ -20,7 +20,10 @@ from PyQt6.QtWidgets import (
 )
 
 from photobooth2.config.loader import Settings
-from photobooth2.ui.overlay_text_store import load_andrea_bellarosa_font, load_overlay_text
+from photobooth2.ui.overlay_text_store import (
+    load_andrea_bellarosa_font,
+    load_overlay_text,
+)
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
@@ -90,13 +93,13 @@ class StartScreen(QWidget):
         self._title_label = QLabel(self._banner_container)
         self._title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._title_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
-        self._title_label.setStyleSheet("background: transparent; color: #c84b4b; border: none;")
-        self._title_label.setFixedHeight(34)
+        self._title_label.setStyleSheet("background: transparent; color: #94480d; border: none;")
+        self._title_label.setFixedHeight(45)
 
         self._subtitle_label = QLabel(self._banner_container)
         self._subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._subtitle_label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
-        self._subtitle_label.setStyleSheet("background: transparent; color: #c84b4b; border: none;")
+        self._subtitle_label.setStyleSheet("background: transparent; color: #94480d; border: none;")
         self._subtitle_label.setFixedHeight(30)
 
         layout.addWidget(self._banner_container, stretch=3)
@@ -235,8 +238,8 @@ class StartScreen(QWidget):
         self._qr_label.move(top_left_x, top_left_y)
         self._qr_label.raise_()
 
-        text_width = max(qr_size, int(pm_w * 0.99))
-        text_spacing = 20
+        text_width = max(qr_size, int(pm_w * 1.00))
+        text_spacing = 30
         text_top = top_left_y + scaled_qr.height() + 20
 
         if self._title_label:

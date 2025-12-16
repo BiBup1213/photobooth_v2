@@ -4,10 +4,10 @@ Collage capture workflow using Pillow to compose multiple photographs.
 
 from __future__ import annotations
 
-from datetime import datetime
 import logging
+from collections.abc import Iterable
+from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List
 
 from PIL import Image, ImageOps
 
@@ -38,7 +38,7 @@ class CollageCaptureFeature:
         """
         logger.info("Starting collage capture (%s photos)", self.collage_count)
 
-        photos: List[Path] = []
+        photos: list[Path] = []
         for index in range(self.collage_count):
             logger.info("Capturing collage photo %s/%s", index + 1, self.collage_count)
             photos.append(self.camera_manager.capture_photo(self.output_dir))
@@ -147,7 +147,7 @@ class CollageCaptureFeature:
                 (cell_w, cell_h),
             ]
 
-        for img, pos, size in zip(images, positions, sizes):
+        for img, pos, size in zip(images, positions, sizes, strict=True):
             fitted = ImageOps.contain(img, size, Image.Resampling.LANCZOS)
             x = pos[0] + (size[0] - fitted.size[0]) // 2
             y = pos[1] + (size[1] - fitted.size[1]) // 2

@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap
@@ -35,7 +34,7 @@ class GalleryScreen(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
-        self._images: List[Path] = []
+        self._images: list[Path] = []
         self._current: Path | None = None
         self._current_pixmap: QPixmap | None = None
 
@@ -165,7 +164,7 @@ class GalleryScreen(QWidget):
 
     # ------------------------------------------------------------------ API
 
-    def set_images(self, images: List[Path]) -> None:
+    def set_images(self, images: list[Path]) -> None:
         """Populate the grid with the given image paths."""
         self._images = [p for p in images if p.exists()]
         self._list.clear()
