@@ -138,6 +138,9 @@ class StartScreen(QWidget):
         self._qr_overlay: QrOverlayWidget | None = None
         self._banner_container: QWidget | None = None
         self._overlay_container: QWidget | None = None
+        self._root_layout: QVBoxLayout | None = None
+        self._buttons_layout: QHBoxLayout | None = None
+        self._action_buttons: list[QPushButton] = []
         self._title_label: QLabel | None = None
         self._subtitle_label: QLabel | None = None
         self._overlay_font_family: str | None = self._load_overlay_font()
@@ -153,6 +156,7 @@ class StartScreen(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(80, 40, 80, 40)
         layout.setSpacing(20)
+        self._root_layout = layout
 
         # -------------------------------------------------
         # FLORAL HEADER (PNG centered, no frame)
@@ -209,10 +213,12 @@ class StartScreen(QWidget):
         buttons_layout = QHBoxLayout()
         buttons_layout.setContentsMargins(0, 0, 0, 40)
         buttons_layout.setSpacing(60)
+        self._buttons_layout = buttons_layout
 
         gallery_btn = self._create_action_button(ASSETS_DIR / "btn_gallery.png", "Galerie")
         photo_btn = self._create_action_button(ASSETS_DIR / "btn_photo.png", "Foto")
         collage_btn = self._create_action_button(ASSETS_DIR / "btn_collage.png", "Collage")
+        self._action_buttons = [gallery_btn, photo_btn, collage_btn]
 
         gallery_btn.clicked.connect(self.gallery_requested.emit)
         photo_btn.clicked.connect(self.photo_requested.emit)
@@ -275,10 +281,23 @@ class StartScreen(QWidget):
     def _calculate_banner_size(self) -> int:
         if not self._banner_container:
             return 0
-        base = min(self._banner_container.width(), self._banner_container.height())
-        if base <= 0:
+        width = self._banner_container.width()
+        height = self._banner_container.height()
+        if width <= 0 or height <= 0:
             return 0
-        banner_size = int(base * 0.72)
+
+        portrait = height > width
+        pad_ratio = 0.06
+        avail_w = int(width * (1.0 - pad_ratio))
+        avail_h = int(height * (1.0 - pad_ratio))
+        if portrait:
+            base = avail_w
+            scale = 0.95
+        else:
+            base = avail_h
+            scale = 0.92
+
+        banner_size = int(base * scale)
         return max(520, min(banner_size, 980))
 
     def _update_floral_pixmap(self) -> None:
@@ -325,6 +344,39 @@ class StartScreen(QWidget):
         self._qr_overlay.update_spacing(qr_size)
         self._qr_overlay.update_typography(qr_size, self._overlay_font_family)
 
+    def _update_root_margins(self) -> None:
+        if not self._root_layout:
+            return
+        base = min(self.width(), self.height())
+        if base <= 0:
+            return
+        side = max(20, min(int(base * 0.06), 80))
+        top = max(20, min(int(base * 0.03), 40))
+        self._root_layout.setContentsMargins(side, top, side, top)
+
+    def _update_button_layout(self) -> None:
+        if not self._buttons_layout or not self._action_buttons:
+            return
+        width = self.width()
+        if width <= 0:
+            return
+        if width < 1100:
+            spacing = 36
+            min_size = 140
+            max_size = 160
+            icon_size = 120
+        else:
+            spacing = 60
+            min_size = 160
+            max_size = 180
+            icon_size = 140
+
+        self._buttons_layout.setSpacing(spacing)
+        for button in self._action_buttons:
+            button.setMinimumSize(min_size, min_size)
+            button.setMaximumSize(max_size, max_size)
+            button.setIconSize(QSize(icon_size, icon_size))
+
     def reload_overlay_text(self) -> None:
         line1, line2 = load_overlay_text()
         if self._title_label:
@@ -346,5 +398,7 @@ class StartScreen(QWidget):
     # ------------------------------------------------------------------
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
+        self._update_root_margins()
         self._update_floral_pixmap()
         self._update_qr_pixmap_size()
+        self._update_button_layout()
