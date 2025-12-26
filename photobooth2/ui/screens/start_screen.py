@@ -290,7 +290,7 @@ class StartScreen(QWidget):
         portrait = height > width
 
         # padding on BOTH sides (6% each side)
-        pad_ratio = 0.06
+        pad_ratio = 0.03
         avail_w = int(width * (1.0 - 2.0 * pad_ratio))
         avail_h = int(height * (1.0 - 2.0 * pad_ratio))
         if avail_w <= 0 or avail_h <= 0:
