@@ -289,24 +289,22 @@ class StartScreen(QWidget):
 
         portrait = height > width
 
-        pad_ratio = 0.06  # 6% Rand je Seite
-        avail_w = int(width * (1.0 - 2 * pad_ratio))
-        avail_h = int(height * (1.0 - 2 * pad_ratio))
+        # padding on BOTH sides (6% each side)
+        pad_ratio = 0.06
+        avail_w = int(width * (1.0 - 2.0 * pad_ratio))
+        avail_h = int(height * (1.0 - 2.0 * pad_ratio))
+        if avail_w <= 0 or avail_h <= 0:
+            return 0
 
-        if portrait:
-            base = avail_w
-            scale = 0.95
-        else:
-            base = avail_h
-            scale = 0.92
+        limit = min(avail_w, avail_h)  # largest square that fits
 
-        banner_size = int(base * scale)
+        # keep same visual ratio across resolutions; slight orientation bias is ok
+        scale = 0.95 if portrait else 0.98
 
-        # Physische Obergrenze: darf niemals größer sein als der verfügbare Raum
-        limit = min(avail_w, avail_h)
-        banner_size = min(banner_size, limit)
+        banner_size = int(limit * scale)
 
-        return max(360, min(banner_size, 980))
+        # only a MIN clamp to avoid absurd tiny rendering
+        return max(360, banner_size)
 
 
     def _update_floral_pixmap(self) -> None:
