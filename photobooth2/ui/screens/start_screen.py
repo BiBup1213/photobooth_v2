@@ -364,25 +364,27 @@ class StartScreen(QWidget):
     def _update_button_layout(self) -> None:
         if not self._buttons_layout or not self._action_buttons:
             return
-        width = self.width()
-        if width <= 0:
+
+        banner_size = self._calculate_banner_size()
+        if banner_size <= 0:
             return
-        if width < 1100:
-            spacing = 36
-            min_size = 140
-            max_size = 160
-            icon_size = 120
-        else:
-            spacing = 60
-            min_size = 160
-            max_size = 180
-            icon_size = 140
+
+        # Button size as a ratio of the banner size
+        btn = int(banner_size * 0.18)
+        btn = max(130, min(btn, 190))          # UX clamp, not resolution clamp
+
+        icon = int(btn * 0.80)
+        icon = max(110, min(icon, 150))
+
+        spacing = int(btn * 0.35)
+        spacing = max(28, min(spacing, 70))
 
         self._buttons_layout.setSpacing(spacing)
         for button in self._action_buttons:
-            button.setMinimumSize(min_size, min_size)
-            button.setMaximumSize(max_size, max_size)
-            button.setIconSize(QSize(icon_size, icon_size))
+            button.setMinimumSize(btn, btn)
+            button.setMaximumSize(btn, btn)    # make it a square tile, consistent
+            button.setIconSize(QSize(icon, icon))
+
 
     def reload_overlay_text(self) -> None:
         line1, line2 = load_overlay_text()
