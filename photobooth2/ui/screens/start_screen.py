@@ -281,15 +281,18 @@ class StartScreen(QWidget):
     def _calculate_banner_size(self) -> int:
         if not self._banner_container:
             return 0
+
         width = self._banner_container.width()
         height = self._banner_container.height()
         if width <= 0 or height <= 0:
             return 0
 
         portrait = height > width
-        pad_ratio = 0.06
-        avail_w = int(width * (1.0 - pad_ratio))
-        avail_h = int(height * (1.0 - pad_ratio))
+
+        pad_ratio = 0.06  # 6% Rand je Seite
+        avail_w = int(width * (1.0 - 2 * pad_ratio))
+        avail_h = int(height * (1.0 - 2 * pad_ratio))
+
         if portrait:
             base = avail_w
             scale = 0.95
@@ -298,7 +301,13 @@ class StartScreen(QWidget):
             scale = 0.92
 
         banner_size = int(base * scale)
-        return max(520, min(banner_size, 980))
+
+        # Physische Obergrenze: darf niemals größer sein als der verfügbare Raum
+        limit = min(avail_w, avail_h)
+        banner_size = min(banner_size, limit)
+
+        return max(360, min(banner_size, 980))
+
 
     def _update_floral_pixmap(self) -> None:
         if not self._floral_label:
