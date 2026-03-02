@@ -5,6 +5,14 @@ Unterstützt DSLR (gPhoto2) oder Webcam, Collagen, Galerie mit Drucken/Löschen 
 
 ---
 
+### Final Setup
+
+Physischer Aufbau der Photobooth mit Touch-Display als Herzstück.
+
+![Photobooth Final](docs/screenshots/photobooth_final.png)
+
+---
+
 ## 📸 Screenshots
 
 ### Main UI
@@ -12,14 +20,6 @@ Unterstützt DSLR (gPhoto2) oder Webcam, Collagen, Galerie mit Drucken/Löschen 
 Zentrale Touch-Oberfläche mit Vollbild-Layout und großen Action-Buttons.
 
 ![Main UI](docs/screenshots/main_ui.png)
-
----
-
-### Final Setup
-
-Physischer Aufbau der Photobooth mit Touch-Display als Herzstück.
-
-![Photobooth Final](docs/screenshots/photobooth_final.png)
 
 ---
 
