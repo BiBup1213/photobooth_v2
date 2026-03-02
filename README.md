@@ -5,6 +5,24 @@ Unterstützt DSLR (gPhoto2) oder Webcam, Collagen, Galerie mit Drucken/Löschen 
 
 ---
 
+## 📸 Screenshots
+
+### Main UI
+
+Zentrale Touch-Oberfläche mit Vollbild-Layout und großen Action-Buttons.
+
+![Main UI](docs/screenshots/main_ui.png)
+
+---
+
+### Final Setup
+
+Physischer Aufbau der Photobooth mit Touch-Display als Herzstück.
+
+![Photobooth Final](docs/screenshots/photobooth_final.png)
+
+---
+
 ## 🧭 Projekt-Hintergrund
 
 Photobooth 2.0 ist aus einer klassischen DIY-Photobox entstanden.
