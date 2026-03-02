@@ -4,10 +4,10 @@ Settings loader that maps configuration from TOML into a typed Settings object.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
-from pathlib import Path
 import tomllib
+from dataclasses import dataclass
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class Settings:
 
 def load_settings(settings_path: str | Path | None = None) -> Settings:
     """
-    Load settings from a TOML file. Falls back to defaults when the file is 
+    Load settings from a TOML file. Falls back to defaults when the file is
     missing or invalid so the app can still start in a safe state.
     """
 

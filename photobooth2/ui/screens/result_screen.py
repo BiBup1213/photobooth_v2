@@ -34,16 +34,16 @@ class ResultScreen(QWidget):
         self._image_label.setStyleSheet("background-color: black; color: white;")
         self._image_label.setMinimumSize(400, 300)
 
-        self._home_button = QPushButton()
-        self._home_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._apply_icon(self._home_button, "home.png")
-
-        self._print_button = QPushButton()
-        self._print_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._apply_icon(self._print_button, "print.png")
+        # --- icon-only buttons (transparent, no fill/frame) ---------------
+        self._back_button = self._create_icon_only_button("back.png")
+        self._home_button = self._create_icon_only_button("home.png")
+        self._print_button = self._create_icon_only_button("print.png")
 
         button_bar = QHBoxLayout()
         button_bar.setContentsMargins(24, 12, 24, 24)
+        button_bar.setSpacing(12)
+
+        button_bar.addWidget(self._back_button, 0, Qt.AlignmentFlag.AlignLeft)
         button_bar.addWidget(self._home_button, 0, Qt.AlignmentFlag.AlignLeft)
         button_bar.addStretch(1)
         button_bar.addWidget(self._print_button, 0, Qt.AlignmentFlag.AlignRight)
@@ -60,10 +60,60 @@ class ResultScreen(QWidget):
 
         self._print_button.clicked.connect(self._handle_print)
         self._home_button.clicked.connect(self._handle_cancel)
+        self._back_button.clicked.connect(self._handle_cancel)
+
+    # ---------------------------------------------------------------- Buttons
+
+    def _create_icon_only_button(self, filename: str) -> QPushButton:
+        """
+        Icon-only button:
+        - transparent (no platform button frame/fill)
+        - no padding / radius
+        - fixed click area for touch
+        """
+        btn = QPushButton()
+        btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        btn.setFlat(True)
+        btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+        # consistent touch target
+        btn.setFixedSize(96, 96)
+
+        self._apply_icon(btn, filename)
+
+        btn.setStyleSheet(
+            """
+            QPushButton {
+                background: transparent;
+                border: none;
+                padding: 0px;
+            }
+            QPushButton:hover {
+                background: transparent;
+                border: none;
+            }
+            QPushButton:pressed {
+                background: transparent;
+                border: none;
+            }
+            """
+        )
+        return btn
+
+    def _apply_icon(self, button: QPushButton, filename: str) -> None:
+        path = ASSETS_DIR / filename
+        if path.exists():
+            icon = QIcon(str(path))
+            button.setIcon(icon)
+
+            # For designed PNG buttons, set to match the button size.
+            button.setIconSize(QtCore.QSize(96, 96))
+
+    # ---------------------------------------------------------------- API
 
     def set_actions_visible(self, visible: bool) -> None:
         self._actions_visible = visible
-        for btn in (self._print_button, self._home_button):
+        for btn in (self._print_button, self._home_button, self._back_button):
             btn.setVisible(visible)
             btn.setEnabled(visible)
 
@@ -107,12 +157,7 @@ class ResultScreen(QWidget):
         )
         self._image_label.setPixmap(scaled)
 
-    def _apply_icon(self, button: QPushButton, filename: str) -> None:
-        path = ASSETS_DIR / filename
-        if path.exists():
-            icon = QIcon(str(path))
-            button.setIcon(icon)
-            button.setIconSize(QtCore.QSize(36, 36))
+    # ---------------------------------------------------------------- Actions
 
     def _handle_print(self) -> None:
         self._auto_return_timer.stop()
