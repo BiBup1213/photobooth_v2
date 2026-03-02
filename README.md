@@ -5,6 +5,58 @@ Unterstützt DSLR (gPhoto2) oder Webcam, Collagen, Galerie mit Drucken/Löschen 
 
 ---
 
+## 📸 Screenshots
+
+---
+
+### 🏗️ Physischer Aufbau
+
+Hardware-Setup mit Lenovo Convertible als zentrales Steuersystem.
+
+![Photobooth Final](docs/screenshots/photobooth_final.png)
+
+---
+
+### 🖥️ Main Interface
+
+Zentrale Touch-Oberfläche im Vollbild mit großen Action-Buttons.
+
+![Main UI](docs/screenshots/main_ui.png)
+
+---
+
+### 📷 Aufnahme & Vorschau
+
+Collage-Workflow mit Live-Vorschau und mehrstufigem Aufnahmeprozess.
+
+![Collage Preview](docs/screenshots/collage_preview.png)
+
+---
+
+### 🖼️ Galerie
+
+Grid-Ansicht mit Detailansicht, Druck- und Löschfunktion.
+
+![Gallery](docs/screenshots/gallery.png)
+
+---
+
+### ⚙️ Einstellungen
+
+#### Allgemeines Menü
+
+![Settings Menu](docs/screenshots/settings_menu.png)
+
+#### Overlay-Text Einstellungen
+
+![Overlay Text Settings](docs/screenshots/overlaytext_settings.png)
+
+#### Kamera-Auswahl
+
+![Camera Select Settings](docs/screenshots/cameraselect_settings.png)
+
+---
+
 ## 🧭 Projekt-Hintergrund
 
 Photobooth 2.0 ist aus einer klassischen DIY-Photobox entstanden.
