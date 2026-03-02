@@ -6,12 +6,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PyQt6 import QtCore
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
-
-ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
+from PyQt6.QtCore import QTimer, Qt, pyqtSignal
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class ResultScreen(QWidget):
