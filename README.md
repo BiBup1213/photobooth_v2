@@ -5,21 +5,55 @@ Unterstützt DSLR (gPhoto2) oder Webcam, Collagen, Galerie mit Drucken/Löschen 
 
 ---
 
-### Final Setup
+## 📸 Screenshots
 
-Physischer Aufbau der Photobooth mit Touch-Display als Herzstück.
+---
+
+### 🏗️ Physischer Aufbau
+
+Hardware-Setup mit Lenovo Convertible als zentrales Steuersystem.
 
 ![Photobooth Final](docs/screenshots/photobooth_final.png)
 
 ---
 
-## 📸 Screenshots
+### 🖥️ Main Interface
 
-### Main UI
-
-Zentrale Touch-Oberfläche mit Vollbild-Layout und großen Action-Buttons.
+Zentrale Touch-Oberfläche im Vollbild mit großen Action-Buttons.
 
 ![Main UI](docs/screenshots/main_ui.png)
+
+---
+
+### 📷 Aufnahme & Vorschau
+
+Collage-Workflow mit Live-Vorschau und mehrstufigem Aufnahmeprozess.
+
+![Collage Preview](docs/screenshots/collage_preview.png)
+
+---
+
+### 🖼️ Galerie
+
+Grid-Ansicht mit Detailansicht, Druck- und Löschfunktion.
+
+![Gallery](docs/screenshots/gallery.png)
+
+---
+
+### ⚙️ Einstellungen
+
+#### Allgemeines Menü
+
+![Settings Menu](docs/screenshots/settings_menu.png)
+
+#### Overlay-Text Einstellungen
+
+![Overlay Text Settings](docs/screenshots/overlaytext_settings.png)
+
+#### Kamera-Auswahl
+
+![Camera Select Settings](docs/screenshots/cameraselect_settings.png)
 
 ---
 
